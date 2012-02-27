@@ -1,7 +1,7 @@
 !--------------------------------------------
 !EGraSP: Evolucion GRAvitacional de Sistemas de Particulas
 !Maestria en Astrofisica, Universidad de Costa Rica - Jeudy Blanco
-!Ultimo cambio: 27/02/2012
+!Ultimo cambio: 27/02/2012 -
 !--------------------------------------------
 program principal
 	use Constantes
