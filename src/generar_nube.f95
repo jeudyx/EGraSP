@@ -434,14 +434,14 @@ program principal
 	call getarg(0, prgname)
 	call getarg(1, namelistfile)
 
-	write(*,*) "prgname y namelistfile - ", prgname, namelistfile
+	!write(*,*) "prgname y namelistfile - ", prgname, namelistfile
 
 	ipunit = 100
 	open(ipunit, file=namelistfile, status='old', action='read', err=100)
 	read(ipunit, generateparam, err=104)
 	close(ipunit)
 
-	print *, N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
+	!print *, N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
 	Variacion = Variacion / 100.0
 

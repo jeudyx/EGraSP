@@ -72,21 +72,6 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 	
 	dist_avg = dist_avg / N
 	
-	!En segunda pasada actualizo aceleracion y velocidades
-	
-	!Necesito saber el radio/distancia maxima para reconstruir arbol
-!	do i = 0, N - 1, 1
-!		vector_posicion(0) = pos_predictor_x(i)
-!		vector_posicion(1) = pos_predictor_y(i)
-!		vector_posicion(2) = pos_predictor_z(i)
-		
-!		if(dist_max < magnitudVector3D(vector_posicion)) then			
-!			dist_max = magnitudVector3D(vector_posicion)
-!		endif		
-!	enddo
-
-	!write(*,*) "Distancia maxima detectada: ", dist_max, " proc id: ", myid, " N: ", N
-
 	!En cada caso se debe reconstruir el árbol
 	!uso las nuevas posiciones. Esta correccion se hace el 10/08 por error de particula escapando
 
