@@ -128,7 +128,7 @@ program principal
 	if(myid == 0) then
 
 		!Solo el root va a cargar la nube desde file
-		call CargarNube("./data/" // path, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, distancias, densidades, N)
+		call CargarNube("./datos/" // path, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, distancias, densidades, N)
 
 		dist_max = maxval(distancias)		
 
@@ -465,14 +465,14 @@ program principal
 		if(myid == 0 .and. i > 0 .and. MOD(i, save_at) == 0) then									
 			Write(filename, '(i10)' )  i
 			!write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs"
-			path = "./data/resultados/" // TRIM(adjustl(filename)) // "_step.csv"						 
+			path = "./datos/resultados/" // TRIM(adjustl(filename)) // "_step.csv"						 
 			call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)			
 		endif			
 
 	enddo
 
 	if(myid == 0) then
-		path = "./data/resultados/complete.csv"			 
+		path = "./datos/resultados/complete.csv"			 
 		call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)					
 	endif
 	

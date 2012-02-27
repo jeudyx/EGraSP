@@ -5,12 +5,12 @@ FCFLAGS = -ffree-line-length-500 -g
 PROGRAMS = egrasp generar_nube
 
 all: $(PROGRAMS)
-
-egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod
-	$(FC) ./src/egrasp.f95 $(FCFLAGS) -o egrasp *.o
 	
 generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod
 	$(FC) ./src/generar_nube.f95 $(FCFLAGS) -o generar_nube *.o
+	
+egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod
+	$(FC) ./src/egrasp.f95 $(FCFLAGS) -o egrasp *.o
 	rm *.mod *.o
 
 constantes.mod: ./src/constantes.f95
@@ -56,4 +56,5 @@ dinamica.mod: barneshut.mod tipos.mod constantes.mod vectores.mod auxiliar.mod f
 clean:
 	rm -f *.mod *.o
 	rm -f *~ $(PROGRAMS)
-
+	rm -rf datos/*
+	mkdir datos/resultados

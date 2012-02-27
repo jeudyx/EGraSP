@@ -1,4 +1,5 @@
 &simparam
+ simtit = 
  N = 2000,
  path = 'esfera_2000.csv',
  temperatura = 10.0D0,
