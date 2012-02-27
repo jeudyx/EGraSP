@@ -30,7 +30,7 @@ program principal
 	type(OctreeNode), POINTER ::  NodosParticulas(:)
 	real*8 dt, umbralBH, tolerancia_colision, dist_max, beta, temperatura
 	type(Particula) p	
-	character(len=100) :: path
+	character(len=100) :: path, simtit, cmdpath
 	logical hubo_colisiones
 	character(len=10) :: filename
 	character(256) :: namelistfile, prgname
@@ -46,7 +46,7 @@ program principal
 	integer response(1)
 	integer ipunit
 	
-	namelist /simparam/ N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
+	namelist /simparam/ simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
 	call MPI_INIT(errcode)	
 	
@@ -69,7 +69,15 @@ program principal
 		read(ipunit, simparam, err=104)
 		close(ipunit)
 
-		print *, N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
+		print *, simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
+
+		cmdpath = "./datos/resultados/" // TRIM(adjustl(simtit))
+
+		write(*,*) "CMDPath es: ", cmdpath
+
+		CALL system('rm -rf ' // cmdpath // "/*.csv")
+		CALL system("mkdir " // cmdpath)
+
 	endif
 
 	!Transmito los parámetros a los demás nodos
@@ -465,16 +473,16 @@ program principal
 		if(myid == 0 .and. i > 0 .and. MOD(i, save_at) == 0) then									
 			Write(filename, '(i10)' )  i
 			!write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs"
-			path = "./datos/resultados/" // TRIM(adjustl(filename)) // "_step.csv"						 
+			path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
 			call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)			
 		endif			
 
 	enddo
 
-	if(myid == 0) then
-		path = "./datos/resultados/complete.csv"			 
-		call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)					
-	endif
+	!if(myid == 0) then
+	!	path = "./datos/resultados/complete.csv"			 
+	!	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)					
+	!endif
 	
 	if(myid == 0) then
 		tag = MPI_ANY_TAG
@@ -492,11 +500,9 @@ program principal
 	
 	write(*,*) "FIN ", myid
 
-100	write ( 6, * ) 'Cannot read namelist stanza: simparam',  &
-		  & trim(namelistfile)
+100	write ( 6, * ) 'Cannot read namelist: simparam (1): ',  trim(namelistfile)
 	call MPI_abort (errcode)
-104	write ( 6, * ) 'Cannot read namelist stanza: simparam',  &
-		  & trim(namelistfile)
+104	write ( 6, * ) 'Cannot read namelist: simparam (2): ',  trim(namelistfile)
 	call MPI_abort (errcode)
 
 end
