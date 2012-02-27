@@ -1,0 +1,13 @@
+&simparam
+ N = 2000,
+ path = 'esfera_2000.csv',
+ temperatura = 10.0D0,
+ umbralBH = 0.7D0,
+ initial_i = 0,
+ beta = 0.16D0,
+ n_vecinos = 35,
+ dt = 10,
+ j = 50000,
+ save_at = 100,
+ tolerancia_colision = 0
+/
