@@ -6,10 +6,9 @@ PROGRAMS = egrasp generar_nube
 
 all: $(PROGRAMS)
 
-simulacion: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod
-	$(FC) ./src/simulacion.f95 $(FCFLAGS) -o simulacion *.o
+egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod
+	$(FC) ./src/egrasp.f95 $(FCFLAGS) -o egrasp *.o
 	
-
 generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod
 	$(FC) ./src/generar_nube.f95 $(FCFLAGS) -o generar_nube *.o
 	rm *.mod *.o

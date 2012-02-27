@@ -22,10 +22,9 @@ subroutine PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, densidad, n_perturba
 	real*8 nueva_posicion(0:2)
 	integer indices(0:N-1), lista_vecinos(0:n_vecinos-1), indices_vecinos(0:n_vecinos-1)
 	logical visitados(0:N-1), condicion_densidad, cambio_signo, es_vecino
-	type(OctreeNode), POINTER :: Arbol
-	
+	type(OctreeNode), POINTER :: Arbol	
 	type(OctreeNode) NodosParticulas(0:N-1)
-	
+
 	ALLOCATE(Arbol)
 	
 	segmento = (radio*2.0D+0) / n_perturbacion
@@ -424,58 +423,24 @@ program principal
 	character(len=10) :: filename
 	
 	real*8 , allocatable, dimension(:) :: masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades
+	character(256) :: namelistfile, prgname
+	
+	integer ipunit
+
+	namelist /generateparam/ N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 
 	altura = 0.0D+0
 
-		
-	write (*,*) 'Numero N de particulas:'
-	read  (*,*) N
+	call getarg(0, prgname)
+	call getarg(1, namelistfile)
 
-	write (*,*) 'Masa de la nube (masas solares):'
-	read  (*,*) Masa_Nube
+	ipunit = 100
+	open(ipunit, file=namelistfile, status='old', &
+		  action='read', err=100)
+	read(ipunit, generateparam, err=104)
+	close(ipunit)
 
-	Masa_Nube_i = Masa_Nube
-
-	write (*,*) 'Densidad inicial de la nube (g/cm3, ej 1.0E-24):'
-	read  (*,*) Densidad_Nube
-
-	write (*,*) 'Variacion maxima en masa de particulas (porcentaje, ej: 5):'
-	read  (*,*) Variacion
-	
-	write (*,*) 'Ratio entre energía gravitacional y rotacional (ej 0.16) - cero sin rotacion-:'
-	read  (*,*) beta
-
-	write (*,*) 'Tipo de distribucion (0=esfera, 1=disco, 2=cilindro): '
-	read  (*,*) tipo	
-
-	write(*,*) 'Desplazamiento en X: '
-	read(*,*) despl_x
-
-	write(*,*) 'Desplazamiento en Y: '
-	read(*,*) despl_y
-	
-	write(*,*) 'Desplazamiento en Z: '
-	read(*,*) despl_z
-
-
-	write(*,*) 'Velocidad en X: '
-	read(*,*) veloc_x
-
-
-	write (*,*) 'Puntos de perturbacion de densidad (0 para uniforme): '
-	read  (*,*) n_perturbacion	
-	
-	if(n_perturbacion > 0) then
-		write (*,*) 'Factor de perturbación de densidad?: '
-		read  (*,*) n_densidad
-	endif
-	
-	if(tipo == 1 .or. tipo == 2) then
-		write (*,*) 'Altura del disco (fraccion del radio, ej: 100 para 1/100): '
-		read  (*,*) altura
-	endif
-	
-	!n_perturbacion = 0
+	print *, N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
 	Variacion = Variacion / 100.0
 
@@ -520,7 +485,6 @@ program principal
 
 	if(n_perturbacion > 0) then
 		call PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, Densidad_Nube, n_perturbacion, Radio_Nube, N/15, n_densidad)
-		!call PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, Densidad_Nube, n_perturbacion, Radio_Nube, N/10/(n_perturbacion/2))
 	endif
 
 	w = calculaVelocidadAngular(Masa_Nube*SOLAR_MASS_KG, Radio_Nube*PARSEC_MTS, beta)	
@@ -545,4 +509,9 @@ program principal
 	
 	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
 	
+	stop
+
+100	write (6, * ) 'Cannot read namelist: generateparam', trim(namelistfile)
+104	write ( 6, * ) 'Cannot read namelist: generateparam',  trim(namelistfile)
+
 end

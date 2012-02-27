@@ -45,8 +45,7 @@ program principal
 	integer response(1)
 	integer ipunit
 	
-	namelist /simparam/ N,path,temperatura,umbralBH,initial_i,beta, &
-							n_vecinos,dt,j,save_at,tolerancia_colision
+	namelist /simparam/ N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
 	call MPI_INIT(errcode)	
 	
@@ -69,8 +68,7 @@ program principal
 		read(ipunit, simparam, err=104)
 		close(ipunit)
 
-		print *, N,path,temperatura,umbralBH,initial_i,beta, &
-							n_vecinos,dt,j,save_at,tolerancia_colision
+		print *, N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 	endif
 
 	!Transmito los parámetros a los demás nodos

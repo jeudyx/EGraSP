@@ -1,0 +1,17 @@
+&simparam
+ N = 2000,
+ Masa_Nube = 1.0D,
+ Densidad_Nube = 1.0E-18D,
+ Variacion = 5,
+ beta = 0.16D,
+ tipo=0,
+ despl_x=0.0D,
+ despl_y=0.0D,
+ despl_z=0.0D,
+ veloc_x=0.0D,
+ n_perturbacion=0,
+ n_densidad=0,
+ altura=0 
+/
+
+
