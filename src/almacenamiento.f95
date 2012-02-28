@@ -21,8 +21,8 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 		!No escribo si masa es menor que cero (señal de que la partícula fue destruida)
 		
 		if(masas(i) > 0 ) then
-			write(unidad,100) coordenadas_x(i), ",", coordenadas_y(i), ",", coordenadas_z(i), ",", v_x(i), ",", v_y(i), ",", v_z(i), ",", radio, ",", masas(i), ",", densidades(i)
-100			format (F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,ES20.5E2)
+			write(unidad,*) coordenadas_x(i), ",", coordenadas_y(i), ",", coordenadas_z(i), ",", v_x(i), ",", v_y(i), ",", v_z(i), ",", radio, ",", masas(i), ",", densidades(i)
+!100			format (F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,ES20.5E2)
 		endif
 	enddo
 
@@ -42,6 +42,7 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 	character(len=100) :: path
 
 	open(unit=UNIT_NUBE, file=path, form='formatted', access='sequential')
+	!open(unit=UNIT_NUBE, file=path, status='old', action='read')
 	!  X,Y,Z,VX,VY,VZ,D,Masa,rho
 	
 	!Salto la linea del header
@@ -50,7 +51,7 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 	
 	do i = 0, N - 1, 1
 		read(UNIT_NUBE, *) coordenadas_x(i), coordenadas_y(i), coordenadas_z(i), v_x(i), v_y(i), v_z(i), distancias(i), masas(i), densidades(i)
-!200		format (F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,F25.15)
+!		format (F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,F25.15,ES20.5E2)
 	enddo
 
 	close(unit=UNIT_NUBE)

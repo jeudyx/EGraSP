@@ -414,7 +414,7 @@ program principal
 	!Masa en masas solares
 	!Variacion en porcentaje de 0 a 1
 	
-	real*8 :: Masa_Nube, Variacion, Densidad_Nube, Radio_Nube, tff, w
+	real*8 :: Masa_Nube, Masa_Nube_i, Variacion, Densidad_Nube, Radio_Nube, tff, w
 	real*8 :: beta, altura, despl_x, despl_y, despl_z, n_densidad, veloc_x
 	integer :: N, Ni, i, tipo, n_perturbacion	
 
@@ -443,6 +443,7 @@ program principal
 
 	!print *, N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
+	Masa_Nube_i = Masa_Nube
 	Variacion = Variacion / 100.0
 
 	Ni = N
@@ -461,7 +462,7 @@ program principal
 	tff = freefalltimegcm(Densidad_Nube)/SEGS_YR
 
 	do i = 0, N - 1, 1
-		masas(i) = asignarMasa(Masa_Nube, Ni, Variacion)
+		masas(i) = asignarMasa(Masa_Nube_i, Ni, Variacion)
 		densidades(i) = Densidad_Nube
 		!temporalmente, las velocidades empiezan en cero
 		v_x(i) = 0.0D+0
