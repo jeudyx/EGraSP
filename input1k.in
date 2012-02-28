@@ -7,8 +7,8 @@
  initial_i = 0,
  beta = 0.16D0,
  n_vecinos = 35,
- dt = 1.0D0,
- j = 1000,
- save_at = 100,
- tolerancia_colision = 0
+ dt = 5.0D0,
+ j = 10000,
+ save_at = 50,
+ tolerancia_colision = 0.0D0
 /
