@@ -1,7 +1,7 @@
 &generateparam
  N = 1000,
- Masa_Nube = 1.0D0,
- Densidad_Nube = 1.5E-18,
+ Masa_Nube = 0.1D0,
+ Densidad_Nube = 1.5E-16,
  Variacion = 5,
  beta = 0.16D0,
  tipo=0,

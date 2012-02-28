@@ -1,14 +1,14 @@
 &simparam
- simtit = 'sim1k0.1MSbeta0.16',
- N = 1000,
- path = 'esfera_1000.csv',
+ simtit = 'sim5k1MSbeta0.16',
+ N = 5000,
+ path = 'esfera_5000.csv',
  temperatura = 10.0D0,
  umbralBH = 0.7D0,
  initial_i = 0,
  beta = 0.16D0,
- n_vecinos = 35,
+ n_vecinos = 40,
  dt = 10.0D0,
- j = 5000,
- save_at = 50,
+ j = 50000,
+ save_at = 100,
  tolerancia_colision = 0
 /

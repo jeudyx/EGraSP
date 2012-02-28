@@ -1,10 +1,10 @@
 &simparam
  simtit = 'sim1k0.1MSbeta0.16',
  N = 1000,
- path = 'esfera_1000.csv',
+ path = 'resultados/sim1k0.1MSbeta0.16/2800_step.csv',
  temperatura = 10.0D0,
  umbralBH = 0.7D0,
- initial_i = 0,
+ initial_i = 2801,
  beta = 0.16D0,
  n_vecinos = 35,
  dt = 10.0D0,

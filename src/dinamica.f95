@@ -45,6 +45,9 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 	
 	dist_max = 0.0D+0
 	dist_avg = 0.0D+0
+
+!	write(*,*) myid, "pasoLeapFrog, beta: ", beta
+
 !	write(*,*) myid, "Entrando en pasoLeapFrog. Posiciones(x): ", pos_x, " - \nPosiciones(y): ", pos_y, "- \nPosiciones(z): ", pos_z
 
 	!Temporalmente, predigo la posicion en el siguiente medio timestep, para actualizar la aceleración

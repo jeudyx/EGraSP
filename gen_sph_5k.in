@@ -1,7 +1,7 @@
 &generateparam
- N = 2000,
- Masa_Nube = 0.5D0,
- Densidad_Nube = 5.0E-18,
+ N = 5000,
+ Masa_Nube = 1.0D0,
+ Densidad_Nube = 1.5E-18,
  Variacion = 5,
  beta = 0.16D0,
  tipo=0,

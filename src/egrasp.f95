@@ -75,7 +75,7 @@ program principal
 
 		write(*,*) "CMDPath es: ", cmdpath
 
-		CALL system('rm -rf ' // cmdpath // "/*.csv")
+		!CALL system('rm -rf ' // cmdpath // "/*.csv")
 		CALL system("mkdir " // cmdpath)
 
 	endif
