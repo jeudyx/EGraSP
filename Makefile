@@ -1,6 +1,6 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-500 -g
+FCFLAGS = -ffree-line-length-500 -O2 -I/usr/include
 
 PROGRAMS = egrasp generar_nube
 
@@ -27,7 +27,7 @@ vectores.mod: tipos.mod constantes.mod
 	$(FC) $(FCFLAGS) -c ./src/vectores.f95
 
 almacenamiento.mod: vectores.mod constantes.mod
-	$(FC) $(FCFLAGS) -c ./src/almacenamiento.f95
+	$(FC) $(FCFLAGS) -lnetcdf -lnetcdff -c ./src/almacenamiento.f95
 
 funciones.mod: tipos.mod constantes.mod vectores.mod
 	$(FC) $(FCFLAGS) -c ./src/funciones.f95

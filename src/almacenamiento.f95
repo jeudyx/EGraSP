@@ -34,6 +34,19 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 end subroutine
 
+subroutine guardarNubeNetCDF(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	use netcdf
+
+	implicit none
+	
+	integer N, i, unidad
+	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
+	real*8 radio
+	real*8 vector_posicion(0:2)
+	character(len=100) :: path
+
+end subroutine
+
 subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 	use Vectores
 	
