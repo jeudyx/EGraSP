@@ -1,24 +1,24 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-500 -O2 -I/usr/include
+FCFLAGS = -f90=gfortran -ffree-line-length-500 -O2
 
 PROGRAMS = egrasp generar_nube
 
 all: $(PROGRAMS)
 	
 	
-egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod
-	$(FC) ./src/egrasp.f95 $(FCFLAGS) -o egrasp *.o
+egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod egrasp_ncio.mod
+	$(FC) ./src/egrasp.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o egrasp *.o
 	
-generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod
-	$(FC) ./src/generar_nube.f95 $(FCFLAGS) -o generar_nube *.o
+generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod egrasp_ncio.mod
+	$(FC) ./src/generar_nube.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o generar_nube *.o
 	rm *.mod *.o
 
 constantes.mod: ./src/constantes.f95
 	$(FC) $(FCFLAGS) -c ./src/constantes.f95
 
 egrasp_ncio.mod: ./src/egrasp_ncio.f95
-	$(FC) $(FCFLAGS) -lnetcdf -lnetcdff -c ./src/egrasp_ncio.f95
+	$(FC) $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -c ./src/egrasp_ncio.f95
 
 almacenamiento.mod: vectores.mod constantes.mod egrasp_ncio.mod
 	$(FC) $(FCFLAGS) -c ./src/almacenamiento.f95
