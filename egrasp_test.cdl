@@ -1,0 +1,52 @@
+netcdf test {
+  dimensions:
+    NP = 2 ;
+    time = UNLIMITED ; // (0 currently)
+
+  variables:
+   double position_X(time, NP) ;
+     position_X:units = "parsec" ;
+     position_X:_FillValue = 1E20 ;
+   double position_Y(time, NP) ;
+     position_Y:units = "parsec" ;
+     position_Y:_FillValue = 1E20 ;
+   double position_Z(time, NP) ;
+     position_Z:units = "parsec" ;
+     position_Z:_FillValue = 1E20 ;
+   double velocity_U(time, NP) ;
+     velocity_U:units = "m/s" ;
+     velocity_U:_FillValue = 1E20 ;
+   double velocity_V(time, NP) ;
+     velocity_V:units = "m/s" ;
+     velocity_V:_FillValue = 1E20 ;
+   double velocity_W(time, NP) ;
+     velocity_W:units = "m/s" ;
+     velocity_W:_FillValue = 1E20 ;
+   double mass(time, NP) ;
+     mass:units = "solar mass" ;
+     mass:_FillValue = 1E20 ;
+   double density(time, NP) ;
+     density:units = "g/cm^3" ;
+     density:_FillValue = 1E20 ;
+   double distance(time, NP) ;
+     distance:units = "parsec" ;
+     distance:_FillValue = 1E20 ;
+
+    // global attributes:
+    :title = "Interstellar cloud model output" ;
+    :history = "Created on Wed Feb 29 15:54:03 2012" ;
+    :institution = "CINESPA" ;
+    :source = "Model simulation with Version XXX of model YYY" ;
+    :references = "http://github.com/jeudyx/EGraSP" ;
+    :comment = "Experiment Name" ;
+    :model_dt = 10 ;
+    :model_totalmass = 10.0 ;
+    :model_initial_density = 1E-18 ;
+    :model_beta = 0.1 ;
+    :model_temperature = 10.0 ;
+    :model_BH_theta = 0.7 ;
+    :model_N_neighbour = 50 ;
+
+  data:
+
+}
