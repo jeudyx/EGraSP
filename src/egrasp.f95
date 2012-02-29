@@ -342,13 +342,6 @@ program principal
 			Nproc = Nproc + (N - (numprocs * Ni))
 		endif		
 		
-		!En este punto, todas las presiones deberian estar calculadas
-		
-		!write(*,*) "-----------------------"
-		!write(*,*) myid, " Presiones calculadas?? : ", presiones, " Densidades locales: ", densidades_locales
-		!write(*,*) "-----------------------"
-		
-		!!write(*,*) myid, " - Estoy antes de llamada a pasoLeapFrog. itr_final = ", itr_final, " - vecinos: ", matriz_vecinos(itr_final, 0:n_vecinos-1)
 		call pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas, pos_x, pos_y, pos_z, densidades, densidades_locales, v_x, v_y, v_z, acc_x, acc_y, acc_z, dt, umbralBH, tolerancia_colision, beta, n_vecinos, matriz_vecinos, presiones, temperatura, myid)
 
 		if(myid == 0) then
@@ -425,7 +418,7 @@ program principal
 		endif	
 				
 		!Vuelve a sincronizar con todos los nodos
-		
+		!OJO 28/02/2012		
 		if(myid == 0) then
 			tag = 0
 			

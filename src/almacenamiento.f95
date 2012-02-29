@@ -4,11 +4,22 @@
 !Ultimo cambio: 27/02/2012 -----
 !
 !Modulo Almacenamiento: se encarga de salvar y recuperar el sistema hacia y desde el disco.
-!Originalmente utilizaba archivos ASCII en formato CSV, actualmente (02/29/2012) cambiando por formato NetCDF
 !--------------------------------------------
 
 MODULE Almacenamiento
 	CONTAINS
+
+
+subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura, ncid)
+
+	implicit none
+	
+	integer N, i, ncid, status, tipo
+	real*8	masa, densidad, variacion, beta, altura
+	character(len=100) :: path
+
+end subroutine
+
 
 subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 
@@ -35,7 +46,6 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 end subroutine
 
 subroutine guardarNubeNetCDF(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
-	use netcdf
 
 	implicit none
 	

@@ -17,6 +17,12 @@ generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tip
 constantes.mod: ./src/constantes.f95
 	$(FC) $(FCFLAGS) -c ./src/constantes.f95
 
+egrasp_ncio.mod: ./src/egrasp_ncio.f95
+	$(FC) $(FCFLAGS) -lnetcdf -lnetcdff -c ./src/egrasp_ncio.f95
+
+almacenamiento.mod: vectores.mod constantes.mod egrasp_ncio.mod
+	$(FC) $(FCFLAGS) -c ./src/almacenamiento.f95
+
 tipos.mod: ./src/tipos.f95
 	$(FC) $(FCFLAGS) -c ./src/tipos.f95
 
@@ -25,9 +31,6 @@ auxiliar.mod: tipos.mod
 
 vectores.mod: tipos.mod constantes.mod
 	$(FC) $(FCFLAGS) -c ./src/vectores.f95
-
-almacenamiento.mod: vectores.mod constantes.mod
-	$(FC) $(FCFLAGS) -lnetcdf -lnetcdff -c ./src/almacenamiento.f95
 
 funciones.mod: tipos.mod constantes.mod vectores.mod
 	$(FC) $(FCFLAGS) -c ./src/funciones.f95
