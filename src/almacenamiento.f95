@@ -1,8 +1,44 @@
+!--------------------------------------------
+!EGraSP: Evolucion GRAvitacional de Sistemas de Particulas
+!Maestria en Astrofisica, Universidad de Costa Rica - Jeudy Blanco
+!Ultimo cambio: 27/02/2012 -----
+!
+!Modulo Almacenamiento: se encarga de salvar y recuperar el sistema hacia y desde el disco.
+!Originalmente utilizaba archivos ASCII en formato CSV, actualmente (02/29/2012) cambiando por formato NetCDF
+!--------------------------------------------
+
 MODULE Almacenamiento
 	CONTAINS
 
 subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+
+	implicit none
+	
+	integer N, i, unidad
+	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
+	real*8 radio
+	real*8 vector_posicion(0:2)
+	character(len=100) :: path
+
+	call guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+end subroutine
+
+SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+
+	implicit none
+
+	integer N, i
+	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
+	character(len=100) :: path
+
+	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+end subroutine
+
+subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 	use Vectores
+	
+	implicit none
+	
 	integer N, i, unidad
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	real*8 radio
@@ -31,7 +67,7 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 end subroutine
 
 
-SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+SUBROUTINE CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 	
 	use Constantes
 	
