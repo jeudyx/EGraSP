@@ -285,11 +285,13 @@ contains
 		end if
 		stat = nf90_inq_dimid(ncid, "time", time_dimid)
 		call check_err
-		stat = nf90_inquire_dimension(ncid, NP_dimid, len=idrec)
-		call check_err
 
+		!Esto es incorrecto, NP es el numero de puntos, no de records		
+		stat = nf90_inquire_dimension(ncid, NP_dimid, len=idrec)
+		call check_err		
 		stat = nf90_inq_varid(ncid, 'time', time_id)
 		call check_err
+		write(*,*) "HELLO, idrec = ", idrec, " NP_dimid = ", NP_dimid, " time_id = ", time_id
 		istart(1) = 1
 		icount(1) = 2
 		stat = nf90_get_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
