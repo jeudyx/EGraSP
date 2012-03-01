@@ -229,20 +229,18 @@ contains
 		call check_err
 		
 		xtime(1) = dble(idrec - 1) * xtimefac * dt(1)
-		istart(:) = 1!idrec
-		icount(:) = 1
+		istart(2) = idrec
+		icount(2) = 1
 	
 		!write(*,*) "DT = ", dt
 
-		stat = nf90_put_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
+		stat = nf90_put_var(ncid, time_id, xtime, istart(2:2), icount(2:2))
 		call check_err		
 
 		stat = nf90_sync(ncid)
 		call check_err
 
-		istart(2) = 1
-		icount(2) = 1		!Recuerde, la dimension temporal es la segunda, la primera es de los puntos!
-
+		istart(1) = 1
 		icount(1) = NP
 
 		write(*,*) "idrec= ", idrec, " xtimefac = ", xtimefac, " xtime = ", xtime, " istart = ", istart, " icount = ", icount
