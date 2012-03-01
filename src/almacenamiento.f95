@@ -10,18 +10,42 @@ MODULE Almacenamiento
 	CONTAINS
 
 
-subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura, ncid)
+subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura)
+
+	use Egrasp_NCIO
 
 	implicit none
 	
 	integer N, i, ncid, status, tipo
 	real*8	masa, densidad, variacion, beta, altura
-	character(len=100) :: path
+	character(len=256) :: path
+	type(runparameters) params
+
+	params%title = "Star formation - collapse of Interstellar cloud"
+	params%institution = "Centro de Investigaciones Espaciales- Universidad de Costa Rica"
+	params%source = "Model simulation output"
+	params%comment = ""
+	params%totalmass = masa
+	params%dt = -1.0D+0
+	params%initial_density = densidad
+	params%beta = beta
+	params%temperature = -1.0D+0
+	params%BH_theta = -1.0D+0
+	params%N_neighbour = -1
+	params%save_every = -1
+
+	call init_ncio(path,N,params)
 
 end subroutine
 
+subroutine CerrarNubeCDF()
+	use Egrasp_NCIO
+	call release_ncio
+end subroutine CerrarNubeCDF
 
 subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+
+	use Egrasp_NCIO
 
 	implicit none
 	
@@ -29,9 +53,11 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	real*8 radio
 	real*8 vector_posicion(0:2)
-	character(len=100) :: path
+	character(len=256) :: path
 
-	call guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	
+
+	!call guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 end subroutine
 
 SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)

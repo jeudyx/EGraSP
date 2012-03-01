@@ -1,6 +1,6 @@
 FC = mpif90
 
-FCFLAGS = -f90=gfortran -ffree-line-length-500 -O2
+FCFLAGS = -g -ffree-line-length-500 -O2
 
 PROGRAMS = egrasp generar_nube
 
@@ -17,7 +17,7 @@ generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tip
 constantes.mod: ./src/constantes.f95
 	$(FC) $(FCFLAGS) -c ./src/constantes.f95
 
-egrasp_ncio.mod: ./src/egrasp_ncio.f95
+egrasp_ncio.mod: ./src/egrasp_ncio.f95 tipos.mod
 	$(FC) $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -c ./src/egrasp_ncio.f95
 
 almacenamiento.mod: vectores.mod constantes.mod egrasp_ncio.mod

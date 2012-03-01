@@ -418,16 +418,16 @@ program principal
 	real*8 :: beta, altura, despl_x, despl_y, despl_z, n_densidad, veloc_x
 	integer :: N, Ni, i, tipo, n_perturbacion	
 
-	character(len=100) :: path
+	character(len=256) :: path
 	
-	character(len=10) :: filename
+	character(len=100) :: cloud_title
 	
 	real*8 , allocatable, dimension(:) :: masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades
 	character(256) :: namelistfile, prgname
 	
 	integer ipunit
 
-	namelist /generateparam/ N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
+	namelist /generateparam/ cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 
 	altura = 0.0D+0
 
@@ -441,7 +441,7 @@ program principal
 	read(ipunit, generateparam, err=104)
 	close(ipunit)
 
-	!print *, N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
+	print *, cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
 	Masa_Nube_i = Masa_Nube
 	Variacion = Variacion / 100.0
@@ -499,18 +499,18 @@ program principal
 	
 	v_x = v_x + veloc_x
 	
-	Write(filename, '(i10)' )  N
+!	Write(filename, '(i10)' )  N
 
-	if(tipo == 0) then
-		path = "./esfera_" // TRIM(adjustl(filename)) // ".csv" 
-	else if(tipo == 1) then
-		path = "./disco_" // TRIM(adjustl(filename)) // ".csv" 
-	else
-		path = "./cilindro_" // TRIM(adjustl(filename)) // ".csv" 
-	endif
+	path = "./datos/" // trim(cloud_title) // ".nc"
+
 	
-	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
-	
+!!!!	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
+
+	write(*,*) "Writing NetCDF file"
+	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura)
+
+	call CerrarNubeCDF
+
 	stop
 
 100	write (6, * ) 'Cannot read namelist: generateparam (1)', trim(namelistfile)

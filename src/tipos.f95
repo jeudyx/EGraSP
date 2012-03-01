@@ -1,4 +1,19 @@
 module Tipos
+
+	type runparameters
+		character (len=256) :: title
+		character (len=64) :: institution
+		character (len=64) :: source
+		character (len=128) :: comment
+		double precision :: dt
+		double precision :: totalmass
+		double precision :: initial_density
+		double precision :: beta
+		double precision :: temperature
+		double precision :: BH_theta
+		integer :: N_neighbour
+		integer :: save_every
+	end type runparameters
 		
 	type Particula	
 		real*8 posicion(0:2)
