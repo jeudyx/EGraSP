@@ -32,7 +32,7 @@ subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altur
 	params%temperature = -1.0D+0
 	params%BH_theta = -1.0D+0
 	params%N_neighbour = -1
-	params%save_every = -1
+	params%save_every = 0
 
 	call init_ncio(path,N,params)
 
@@ -55,7 +55,7 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 	real*8 vector_posicion(0:2)
 	character(len=256) :: path	
 
-	call guardarNubeNetCDF(unidad, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	call guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 end subroutine
 
 SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
@@ -89,7 +89,7 @@ subroutine guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas
 		distancias(i) = magnitudVector3D(vector_posicion)
 	enddo
 
-	call writerec(N,coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
+	call writerec(N, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
 
 end subroutine
 

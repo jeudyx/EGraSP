@@ -71,24 +71,18 @@ contains
 		stat = nf90_def_var(ncid, 'time', nf90_double, idims(2:2), time_id)
 		call check_err
 
-		stat = nf90_def_var(ncid, 'position_X', nf90_double, idims, &
-												position_X_id)
+		stat = nf90_def_var(ncid, 'position_X', nf90_double, idims, position_X_id)
 		call check_err
-		stat = nf90_def_var(ncid, 'position_Y', nf90_double, idims, &
-												position_Y_id)
+		stat = nf90_def_var(ncid, 'position_Y', nf90_double, idims, position_Y_id)
 		call check_err
-		stat = nf90_def_var(ncid, 'position_Z', nf90_double, idims, &
-												position_Z_id)
+		stat = nf90_def_var(ncid, 'position_Z', nf90_double, idims, position_Z_id)
 		call check_err
 
-		stat = nf90_def_var(ncid, 'velocity_U', nf90_double, idims, &
-												velocity_U_id)
+		stat = nf90_def_var(ncid, 'velocity_U', nf90_double, idims, velocity_U_id)
 		call check_err
-		stat = nf90_def_var(ncid, 'velocity_V', nf90_double, idims, &
-												velocity_V_id)
+		stat = nf90_def_var(ncid, 'velocity_V', nf90_double, idims, velocity_V_id)
 		call check_err
-		stat = nf90_def_var(ncid, 'velocity_W', nf90_double, idims, &
-												velocity_W_id)
+		stat = nf90_def_var(ncid, 'velocity_W', nf90_double, idims, velocity_W_id)
 		call check_err
 
 		stat = nf90_def_var(ncid, 'mass', nf90_double, idims, mass_id)
@@ -188,26 +182,32 @@ contains
 	subroutine writerec(NP,X,Y,Z,U,V,W,mass,rho,dist)
 		implicit none
 		integer , intent(in) :: NP
-		real*8 X(0:NP-1)		
-		real*8 Y(0:NP-1)
-		real*8 Z(0:NP-1)
-		real*8 U(0:NP-1)
-		real*8 V(0:NP-1)
-		real*8 W(0:NP-1)
-		real*8 mass(0:NP-1)
-		real*8 rho(0:NP-1)
-		real*8 dist(0:NP-1)
+		real*8 X(1:NP)		
+		real*8 Y(1:NP)
+		real*8 Z(1:NP)
+		real*8 U(1:NP)
+		real*8 V(1:NP)
+		real*8 W(1:NP)
+		real*8 mass(1:NP)
+		real*8 rho(1:NP)
+		real*8 dist(1:NP)
 		integer , dimension(2) :: istart , icount
 		double precision , dimension(1) :: xtime
 
 		xtime(1) = dble(idrec) * xtimefac
-		istart(1) = idrec
-		icount(1) = 1
+		istart(:) = idrec
+		icount(:) = 1
+
+		write(*,*) "xtime is: ", xtime
+	
 		stat = nf90_put_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
 		call check_err
 
 		istart(2) = 1
-		icount(2) = NP
+		icount(2) = 1
+
+		icount(1) = NP
+
 		stat = nf90_put_var(ncid, position_X_id, X, istart, icount)
 		call check_err
 		stat = nf90_put_var(ncid, position_Y_id, Y, istart, icount)
@@ -235,15 +235,15 @@ contains
 		implicit none
 		integer , intent(in) :: NP
 		character (len=filelen) , intent(in) :: filename
-		real*8 X(0:NP-1)		
-		real*8 Y(0:NP-1)
-		real*8 Z(0:NP-1)
-		real*8 U(0:NP-1)
-		real*8 V(0:NP-1)
-		real*8 W(0:NP-1)
-		real*8 mass(0:NP-1)
-		real*8 rho(0:NP-1)
-		real*8 dist(0:NP-1)
+		real*8 X(1:NP)		
+		real*8 Y(1:NP)
+		real*8 Z(1:NP)
+		real*8 U(1:NP)
+		real*8 V(1:NP)
+		real*8 W(1:NP)
+		real*8 mass(1:NP)
+		real*8 rho(1:NP)
+		real*8 dist(1:NP)
 		integer , dimension(2) :: istart , icount
 		double precision , dimension(2) :: xtime
 		integer :: NPlen , NP_dimid , time_dimid
