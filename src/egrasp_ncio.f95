@@ -269,7 +269,7 @@ contains
 		real*8 rho(1:NP)
 		real*8 dist(1:NP)
 		integer , dimension(2) :: istart , icount
-		double precision , dimension(2) :: xtime
+		double precision , dimension(1) :: xtime
 		integer :: NPlen , NP_dimid , time_dimid
 
 		stat = nf90_open(filename, NF90_WRITE, ncid)
@@ -285,18 +285,15 @@ contains
 		end if
 		stat = nf90_inq_dimid(ncid, "time", time_dimid)
 		call check_err
-
-		!Esto es incorrecto, NP es el numero de puntos, no de records		
-		stat = nf90_inquire_dimension(ncid, NP_dimid, len=idrec)
+		
+		stat = nf90_inquire_dimension(ncid, time_dimid, len=idrec)
 		call check_err		
 		stat = nf90_inq_varid(ncid, 'time', time_id)
-		call check_err
-		write(*,*) "HELLO, idrec = ", idrec, " NP_dimid = ", NP_dimid, " time_id = ", time_id
-		istart(1) = 1
-		icount(1) = 2
+		call check_err		
+		istart(1) = idrec
+		icount(1) = 1
 		stat = nf90_get_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
-		call check_err
-		xtimefac = xtime(2) - xtime(1)
+		call check_err		
 		stat = nf90_inq_varid(ncid, 'position_X', position_X_id)
 		call check_err
 		stat = nf90_inq_varid(ncid, 'position_Y', position_Y_id)
@@ -315,10 +312,14 @@ contains
 		call check_err
 		stat = nf90_inq_varid(ncid, 'distance', distance_id)
 		call check_err
-		istart(1) = idrec
-		istart(2) = 1
-		icount(1) = 1
-		icount(2) = NP
+!		istart(1) = idrec
+!		istart(2) = 1
+!		icount(1) = 1
+!		icount(2) = NP
+		istart(1) = 1
+		istart(2) = idrec
+		icount(1) = NP
+		icount(2) = 1
 		stat = nf90_get_var(ncid, position_X_id, X, istart, icount)
 		call check_err
 		stat = nf90_get_var(ncid, position_Y_id, Y, istart, icount)
