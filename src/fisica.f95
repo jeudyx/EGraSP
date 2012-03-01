@@ -69,9 +69,7 @@ function ArtificialViscosityAcc(idx_particula, temperatura, n_vecinos, lista_vec
 		radio2 = calcularRadio(masas(lista_vecinos(j)), densidades(lista_vecinos(j))) / PARSEC_CMS
 		
 		soft_len = (radio1 + radio2) * PARSEC_MTS
-		!soft_len = soft_len * 1.5
-		
-		
+				
 		r2(0) = pos_x(lista_vecinos(j)) * PARSEC_MTS
 		r2(1) = pos_y(lista_vecinos(j)) * PARSEC_MTS
 		r2(2) = pos_z(lista_vecinos(j)) * PARSEC_MTS
@@ -154,10 +152,9 @@ real*8 function ArtificialViscosity(idx_particula, temperatura, n_vecinos, lista
 		
 	do j = 0, n_vecinos - 1, 1
 		
-		!radio2 = calcularRadio(masas(lista_vecinos(j)), densidades(lista_vecinos(j))) / PARSEC_CMS
-		
+		radio2 = calcularRadio(masas(lista_vecinos(j)), densidades(lista_vecinos(j))) / PARSEC_CMS
+
 		soft_len = (radio1 + radio2) * PARSEC_MTS
-		!soft_len = soft_len * 1.5	
 				
 		!write(*,*) "En ArtificialViscosity. radio1, radio2, soft: ", radio1* PARSEC_MTS, radio2* PARSEC_MTS, soft_len
 		
@@ -240,10 +237,9 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 	
 	do j = 0, n_vecinos - 1, 1		
 		
-		!radio2 = calcularRadio(masas(lista_vecinos(j)), densidades(lista_vecinos(j))) / PARSEC_CMS
-		
+		radio2 = calcularRadio(masas(lista_vecinos(j)), densidades(lista_vecinos(j))) / PARSEC_CMS
+
 		soft_len = (radio1 + radio2) * PARSEC_MTS		
-		!soft_len = soft_len * 1.5
 				
 		posicion1(0) = pos_x(idx_particula) * PARSEC_MTS
 		posicion1(1) = pos_y(idx_particula) * PARSEC_MTS

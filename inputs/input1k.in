@@ -8,6 +8,6 @@
  n_vecinos = 35,
  dt = 5.0D0,
  j = 10000,
- save_at = 10,
+ save_at = 100,
  tolerancia_colision = 0.0D0
 /
