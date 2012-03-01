@@ -46,7 +46,7 @@ program principal
 	integer response(1)
 	integer ipunit
 	
-	namelist /simparam/ simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
+	namelist /simparam/ simtit,N,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
 	call MPI_INIT(errcode)	
 	
@@ -68,15 +68,11 @@ program principal
 			  action='read', err=100)
 		read(ipunit, simparam, err=104)
 		close(ipunit)
+	
+		!print *, simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
-		print *, simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
-
-		cmdpath = "./datos/resultados/" // TRIM(adjustl(simtit))
-
-		write(*,*) "CMDPath es: ", cmdpath
-
-		!CALL system('rm -rf ' // cmdpath // "/*.csv")
-		CALL system("mkdir " // cmdpath)
+		!no longer needed with NetCDF cmdpath = "./datos/resultados/" // TRIM(adjustl(simtit))
+		!	CALL system("mkdir " // cmdpath)
 
 	endif
 
@@ -136,11 +132,25 @@ program principal
 	if(myid == 0) then
 
 		!Solo el root va a cargar la nube desde file
-		call CargarNube("./datos/" // path, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, distancias, densidades, N)
 
+		path = "./datos/" // trim(simtit) // ".nc"
+		
+		!write(*,*) "Loading data from: ", path
+
+		!En este punto, el archivo netCDF esta abierto		
+		call CargarNube(path, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, distancias, densidades, N)
+		write(*,*) "Done CargarNube"
+		call actualizarSimParamsNetCDF(path, dt, temperatura, umbralBH, n_vecinos, save_at)
+		
 		dist_max = maxval(distancias)		
 
-		print *, "Nube cargada"		
+		print *, "Nube cargada"
+		write(*,*) "Masas: ", masas
+		write(*,*) "X: ", pos_x
+		write(*,*) "VX: ", v_x
+		write(*,*) "--------------------------"
+
+		stop
 
 		Arbol%id = 0
 		Arbol%id_particula = -1
@@ -165,7 +175,7 @@ program principal
 		
 		write(*,*) "Recuerde calcular iteraciones y dt basado en freefall time y densidad que hay que calcular"
 	endif	
-			
+		
 	if(myid == 0) then
 		tag = 0	
 		write(*,*) "Inicia envio"	
@@ -466,23 +476,18 @@ program principal
 		if(myid == 0 .and. i > 0 .and. MOD(i, save_at) == 0) then									
 			Write(filename, '(i10)' )  i
 			!write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs"
-			path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
-			call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)			
+			!old CSV call path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
+			!old CSV call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)						
+			call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
 		endif			
 
 	enddo
-
-	!if(myid == 0) then
-	!	path = "./datos/resultados/complete.csv"			 
-	!	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)					
-	!endif
 	
 	if(myid == 0) then
 		tag = MPI_ANY_TAG
 		do i = 1, numprocs - 1, 1
 			call MPI_RECV(response, 1, MPI_INTEGER, i, tag, MPI_COMM_WORLD, status, errcode)
 		enddo
-		!write(*,*) "Recibidos todos los mensajes de hijos..."
 	else
 		response(1) = 0
 		tag = 0

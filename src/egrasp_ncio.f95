@@ -32,7 +32,7 @@ module Egrasp_NCIO
 
 	double precision :: xtimefac
 
-	public :: runparameters , update_ncio, init_ncio , writerec , release_ncio , open_ncio
+	public :: SimParameters , update_ncio, init_ncio , writerec , release_ncio , open_ncio
 
 contains
 
@@ -47,7 +47,7 @@ contains
 	subroutine update_ncio(filename,rp)
 		implicit none
 		character (len=filelen) , intent(in) :: filename
-		type(runparameters) , intent(in) :: rp 
+		type(SimParameters) , intent(in) :: rp 
 		stat = nf90_open(filename, NF90_WRITE, ncid)
 		call check_err
 
@@ -69,7 +69,7 @@ contains
 		implicit none
 		character (len=filelen) , intent(in) :: filename
 		integer , intent(in) :: NP_len
-		type(runparameters) , intent(in) :: rp 
+		type(SimParameters) , intent(in) :: rp 
 		integer :: NP_dim
 		integer :: time_dim
 		character (len=64) :: history
@@ -130,7 +130,6 @@ contains
 		call check_err
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'comment', rp%comment)
 		call check_err
-
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_dt', rp%dt)
 		call check_err
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_totalmass', rp%totalmass)
@@ -146,6 +145,13 @@ contains
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_N_neighbour', rp%N_neighbour)
 		call check_err
 
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'misc_Cloud_Initial_Radius', rp%Radio_Nube)
+		call check_err
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'misc_Cloud_FreeFallTime', rp%tff)
+		call check_err
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'misc_Cloud_JeansMasss10K', rp%masaJeansH210K)
+		call check_err
+		
 		stat = nf90_put_att(ncid, time_id, 'units', 'years since 0000-00-00')
 		call check_err
 

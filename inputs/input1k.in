@@ -1,7 +1,6 @@
 &simparam
  simtit = 'sim1k0.1MSbeta0.16',
  N = 1000,
- path = 'esfera_1000_linux.csv',
  temperatura = 10.0D0,
  umbralBH = 0.7D0,
  initial_i = 0,

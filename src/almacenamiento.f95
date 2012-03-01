@@ -15,7 +15,7 @@ subroutine actualizarSimParamsNetCDF(path, dt, temperatura, theta, n_vecinos, sa
 
 	implicit none
 
-	type(Runparameters) params
+	type(SimParameters) params
 	character(len=256) :: path
 	integer n_vecinos, save_every
 	real*8 temperatura, dt, theta
@@ -53,7 +53,6 @@ subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altur
 	params%BH_theta = -1.0D+0
 	params%N_neighbour = -1
 	params%save_every = 0
-
 	params%Radio_Nube = Radio_Nube
 	params%tff = tff
 	params%masaJeansH210K = masaJeansH210K
@@ -88,9 +87,14 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 
 	integer N, i
 	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
-	character(len=100) :: path
+	character(len=256) :: path
 
-	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+	path = trim(adjustl(adjustr(path)))
+
+	call CargarNubeNetCDF(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+
+	!call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+	
 end subroutine
 
 subroutine guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
@@ -173,6 +177,21 @@ SUBROUTINE CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_
 	enddo
 
 	close(unit=UNIT_NUBE)
+
+END SUBROUTINE
+
+SUBROUTINE CargarNubeNetCDF(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+	
+	use Constantes
+	use Egrasp_NCIO
+		
+	implicit none
+
+	integer N, i
+	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
+	character(len=256) :: path
+
+	call open_ncio(N,path,coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
 
 END SUBROUTINE
 
