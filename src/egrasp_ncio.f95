@@ -32,7 +32,7 @@ module Egrasp_NCIO
 
 	double precision :: xtimefac
 
-	public :: runparameters , init_ncio , writerec , release_ncio , open_ncio
+	public :: runparameters , update_ncio, init_ncio , writerec , release_ncio , open_ncio
 
 contains
 
@@ -43,6 +43,27 @@ contains
 			stop
 		endif
 	end subroutine check_err
+
+	subroutine update_ncio(filename,rp)
+		implicit none
+		character (len=filelen) , intent(in) :: filename
+		type(runparameters) , intent(in) :: rp 
+		stat = nf90_open(filename, NF90_WRITE, ncid)
+		call check_err
+
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_dt', rp%dt)
+		call check_err
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_temperature', rp%temperature)
+		call check_err
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_BH_theta', rp%BH_theta)
+		call check_err
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_N_neighbour', rp%N_neighbour)
+		call check_err
+
+		stat = nf90_sync(ncid)
+		call check_err		
+
+	end subroutine update_ncio
 
 	subroutine init_ncio(filename,NP_len,rp)
 		implicit none
@@ -114,8 +135,7 @@ contains
 		call check_err
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_totalmass', rp%totalmass)
 		call check_err
-		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_initial_density', &
-												rp%initial_density)
+		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_initial_density', rp%initial_density)
 		call check_err
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_beta', rp%beta)
 		call check_err
@@ -197,14 +217,12 @@ contains
 		xtime(1) = dble(idrec) * xtimefac
 		istart(:) = idrec
 		icount(:) = 1
-
-		write(*,*) "xtime is: ", xtime
 	
 		stat = nf90_put_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
 		call check_err
 
 		istart(2) = 1
-		icount(2) = 1
+		icount(2) = 1		!Recuerde, la dimension temporal es la segunda, la primera es de los puntos!
 
 		icount(1) = NP
 

@@ -503,10 +503,12 @@ program principal
 
 	write(*,*) "Writing NetCDF file"
 	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura)
-	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
+	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)	
 	call CerrarNubeCDF
 	write(*,*) "Done with NetCDF file"
 
+	call actualizarSimParamsNetCDF(path, 10.0D+0, 50.0D+0, 0.7D+0, 35, 100)
+	call CerrarNubeCDF
 	stop
 
 100	write (6, * ) 'Cannot read namelist: generateparam (1)', trim(namelistfile)

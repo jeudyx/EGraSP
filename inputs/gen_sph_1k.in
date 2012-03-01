@@ -1,6 +1,6 @@
 &generateparam
- cloud_title = 'esfera1k',
- N = 10,
+ cloud_title = 'sim1k0.1MSbeta0.16',
+ N = 1000,
  Masa_Nube = 0.1D0,
  Densidad_Nube = 1.5E-16,
  Variacion = 5.0D0,

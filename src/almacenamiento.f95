@@ -10,6 +10,26 @@ MODULE Almacenamiento
 	CONTAINS
 
 
+subroutine actualizarSimParamsNetCDF(path, dt, temperatura, theta, n_vecinos, save_every)
+	use Egrasp_NCIO
+
+	implicit none
+
+	type(runparameters) params
+	character(len=256) :: path
+	integer n_vecinos, save_every
+	real*8 temperatura, dt, theta
+
+	params%dt = dt
+	params%temperature = temperatura
+	params%BH_theta = theta
+	params%N_neighbour = n_vecinos
+	params%save_every = save_every
+
+	call update_ncio(path,params)
+	
+end subroutine actualizarSimParamsNetCDF
+
 subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura)
 
 	use Egrasp_NCIO
@@ -21,7 +41,7 @@ subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altur
 	character(len=256) :: path
 	type(runparameters) params
 
-	params%title = "Star formation - collapse of Interstellar cloud"
+	params%title = "EGraSP - Evolucion Gravitacional de Sistemas de Particulas"
 	params%institution = "Centro de Investigaciones Espaciales- Universidad de Costa Rica"
 	params%source = "Model simulation output"
 	params%comment = ""
