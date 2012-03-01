@@ -1,6 +1,6 @@
 module Tipos
 
-	type runparameters
+	type SimParameters
 		character (len=256) :: title
 		character (len=64) :: institution
 		character (len=64) :: source
@@ -11,9 +11,12 @@ module Tipos
 		double precision :: beta
 		double precision :: temperature
 		double precision :: BH_theta
+		double precision :: Radio_Nube 
+		double precision :: tff 
+		double precision :: masaJeansH210K
 		integer :: N_neighbour
 		integer :: save_every
-	end type runparameters
+	end type SimParameters
 		
 	type Particula	
 		real*8 posicion(0:2)

@@ -441,7 +441,7 @@ program principal
 	read(ipunit, generateparam, err=104)
 	close(ipunit)
 
-	print *, cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
+	!print *, cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
 	Masa_Nube_i = Masa_Nube
 	Variacion = Variacion / 100.0
@@ -501,11 +501,9 @@ program principal
 	
 	path = "./datos/" // trim(cloud_title) // ".nc"
 
-	write(*,*) "Writing NetCDF file"
-	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura)
+	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura, Radio_Nube, tff, masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG)
 	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)	
 	call CerrarNubeCDF
-	write(*,*) "Done with NetCDF file"
 
 	call actualizarSimParamsNetCDF(path, 10.0D+0, 50.0D+0, 0.7D+0, 35, 100)
 	call CerrarNubeCDF

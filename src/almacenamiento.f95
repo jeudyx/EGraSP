@@ -15,7 +15,7 @@ subroutine actualizarSimParamsNetCDF(path, dt, temperatura, theta, n_vecinos, sa
 
 	implicit none
 
-	type(runparameters) params
+	type(Runparameters) params
 	character(len=256) :: path
 	integer n_vecinos, save_every
 	real*8 temperatura, dt, theta
@@ -30,16 +30,16 @@ subroutine actualizarSimParamsNetCDF(path, dt, temperatura, theta, n_vecinos, sa
 	
 end subroutine actualizarSimParamsNetCDF
 
-subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura)
+subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura, Radio_Nube, tff, masaJeansH210K)
 
 	use Egrasp_NCIO
 
 	implicit none
 	
 	integer N, i, ncid, status, tipo
-	real*8	masa, densidad, variacion, beta, altura
+	real*8	masa, densidad, variacion, beta, altura, Radio_Nube, tff, masaJeansH210K
 	character(len=256) :: path
-	type(runparameters) params
+	type(SimParameters) params
 
 	params%title = "EGraSP - Evolucion Gravitacional de Sistemas de Particulas"
 	params%institution = "Centro de Investigaciones Espaciales- Universidad de Costa Rica"
@@ -53,6 +53,10 @@ subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altur
 	params%BH_theta = -1.0D+0
 	params%N_neighbour = -1
 	params%save_every = 0
+
+	params%Radio_Nube = Radio_Nube
+	params%tff = tff
+	params%masaJeansH210K = masaJeansH210K
 
 	call init_ncio(path,N,params)
 
