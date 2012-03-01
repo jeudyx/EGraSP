@@ -505,8 +505,6 @@ program principal
 	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)	
 	call CerrarNubeCDF
 
-	call actualizarSimParamsNetCDF(path, 10.0D+0, 50.0D+0, 0.7D+0, 35, 100)
-	call CerrarNubeCDF
 	stop
 
 100	write (6, * ) 'Cannot read namelist: generateparam (1)', trim(namelistfile)

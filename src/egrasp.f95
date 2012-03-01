@@ -144,13 +144,7 @@ program principal
 		
 		dist_max = maxval(distancias)		
 
-		print *, "Nube cargada"
-		write(*,*) "Masas: ", masas
-		write(*,*) "X: ", pos_x
-		write(*,*) "VX: ", v_x
-		write(*,*) "--------------------------"
-
-		stop
+		print *, "Nube cargada desde"
 
 		Arbol%id = 0
 		Arbol%id_particula = -1
@@ -484,6 +478,7 @@ program principal
 	enddo
 	
 	if(myid == 0) then
+		call CerrarNubeCDF		
 		tag = MPI_ANY_TAG
 		do i = 1, numprocs - 1, 1
 			call MPI_RECV(response, 1, MPI_INTEGER, i, tag, MPI_COMM_WORLD, status, errcode)

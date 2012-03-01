@@ -27,6 +27,7 @@ module Egrasp_NCIO
 	integer :: mass_id
 	integer :: density_id
 	integer :: distance_id
+	integer :: dt_id
 
 	integer :: idrec = 1
 
@@ -59,6 +60,8 @@ contains
 		call check_err
 		stat = nf90_put_att(ncid, NF90_GLOBAL, 'model_N_neighbour', rp%N_neighbour)
 		call check_err
+
+		xtimefac = dble(rp%save_every)
 
 		stat = nf90_sync(ncid)
 		call check_err		
@@ -217,20 +220,32 @@ contains
 		real*8 mass(1:NP)
 		real*8 rho(1:NP)
 		real*8 dist(1:NP)
+		
 		integer , dimension(2) :: istart , icount
 		double precision , dimension(1) :: xtime
+		double precision , dimension(1) :: dt
 
-		xtime(1) = dble(idrec) * xtimefac
-		istart(:) = idrec
+		stat = nf90_get_att(ncid, NF90_GLOBAL, "model_dt", dt)
+		call check_err
+		
+		xtime(1) = dble(idrec - 1) * xtimefac * dt(1)
+		istart(:) = 1!idrec
 		icount(:) = 1
 	
+		!write(*,*) "DT = ", dt
+
 		stat = nf90_put_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
+		call check_err		
+
+		stat = nf90_sync(ncid)
 		call check_err
 
 		istart(2) = 1
 		icount(2) = 1		!Recuerde, la dimension temporal es la segunda, la primera es de los puntos!
 
 		icount(1) = NP
+
+		write(*,*) "idrec= ", idrec, " xtimefac = ", xtimefac, " xtime = ", xtime, " istart = ", istart, " icount = ", icount
 
 		stat = nf90_put_var(ncid, position_X_id, X, istart, icount)
 		call check_err
@@ -250,6 +265,7 @@ contains
 		call check_err
 		stat = nf90_put_var(ncid, distance_id, dist, istart, icount)
 		call check_err
+
 		stat = nf90_sync(ncid)
 		call check_err
 		idrec = idrec + 1
@@ -293,6 +309,9 @@ contains
 		istart(1) = idrec
 		icount(1) = 1
 		stat = nf90_get_var(ncid, time_id, xtime, istart(1:1), icount(1:1))
+
+		write(*,*) "Recuperando. idrec = ", idrec, " xtime = ", xtime
+
 		call check_err		
 		stat = nf90_inq_varid(ncid, 'position_X', position_X_id)
 		call check_err
@@ -339,6 +358,10 @@ contains
 		stat = nf90_get_var(ncid, distance_id, dist, istart, icount)
 		call check_err
 		idrec = idrec + 1
+
+		stat = nf90_sync(ncid)
+		call check_err
+
 	end subroutine open_ncio
 
 end module egrasp_ncio
