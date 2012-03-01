@@ -26,7 +26,7 @@ subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altur
 	params%source = "Model simulation output"
 	params%comment = ""
 	params%totalmass = masa
-	params%dt = -1.0D+0
+	params%dt = 0.0D+0
 	params%initial_density = densidad
 	params%beta = beta
 	params%temperature = -1.0D+0
@@ -53,11 +53,9 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	real*8 radio
 	real*8 vector_posicion(0:2)
-	character(len=256) :: path
+	character(len=256) :: path	
 
-	
-
-	!call guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	call guardarNubeNetCDF(unidad, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 end subroutine
 
 SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
@@ -71,15 +69,27 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 end subroutine
 
-subroutine guardarNubeNetCDF(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+subroutine guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+
+	use Egrasp_NCIO
+	use Vectores
 
 	implicit none
 	
-	integer N, i, unidad
-	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
+	integer N, i
+	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1), distancias(0:N-1)
 	real*8 radio
 	real*8 vector_posicion(0:2)
-	character(len=100) :: path
+	character(len=256) :: path
+
+	do i = 0, N - 1, 1
+		vector_posicion(0) = coordenadas_x(i)
+		vector_posicion(1) = coordenadas_y(i)
+		vector_posicion(2) = coordenadas_z(i)
+		distancias(i) = magnitudVector3D(vector_posicion)
+	enddo
+
+	call writerec(N,coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
 
 end subroutine
 
@@ -107,7 +117,6 @@ subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, 
 		
 		if(masas(i) > 0 ) then
 			write(unidad,*) coordenadas_x(i), ",", coordenadas_y(i), ",", coordenadas_z(i), ",", v_x(i), ",", v_y(i), ",", v_z(i), ",", radio, ",", masas(i), ",", densidades(i)
-!100			format (F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,F25.15,a,ES20.5E2)
 		endif
 	enddo
 

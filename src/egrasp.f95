@@ -30,7 +30,7 @@ program principal
 	type(OctreeNode), POINTER ::  NodosParticulas(:)
 	real*8 dt, umbralBH, tolerancia_colision, dist_max, beta, temperatura
 	type(Particula) p	
-	character(len=100) :: path, simtit, cmdpath
+	character(len=256) :: path, simtit, cmdpath
 	logical hubo_colisiones
 	character(len=10) :: filename
 	character(256) :: namelistfile, prgname

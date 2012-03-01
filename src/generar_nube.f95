@@ -499,17 +499,13 @@ program principal
 	
 	v_x = v_x + veloc_x
 	
-!	Write(filename, '(i10)' )  N
-
 	path = "./datos/" // trim(cloud_title) // ".nc"
-
-	
-!!!!	call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
 
 	write(*,*) "Writing NetCDF file"
 	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura)
-
+	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
 	call CerrarNubeCDF
+	write(*,*) "Done with NetCDF file"
 
 	stop
 
