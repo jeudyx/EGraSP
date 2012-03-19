@@ -427,7 +427,7 @@ program principal
 			tag = 0
 			
 			!07/02/2012 Ajusta densidades de particulas a la densidad local para la siguiente iteración
-!			densidades(0:N-1) = densidades_locales(0:N-1)
+			densidades(0:N-1) = densidades_locales(0:N-1)
 
 			!write(*,*) "----------------"			
 			!write(*,*) "Densidades locales: ", densidades_locales			
@@ -436,7 +436,7 @@ program principal
 			
 			do itr_procs = 1, numprocs - 1, 1
 				call MPI_SSEND(masas, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
-!				call MPI_SSEND(densidades, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
+				call MPI_SSEND(densidades, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
 				call MPI_SSEND(pos_x, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
 				call MPI_SSEND(pos_y, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
 				call MPI_SSEND(pos_z, N, MPI_DOUBLE_PRECISION, itr_procs, tag, MPI_COMM_WORLD, errcode)
@@ -449,7 +449,7 @@ program principal
 			!write(*,*) "Recibiendo datos desde nodo: ", myid, " N = ", N
 			tag = MPI_ANY_TAG
 			call MPI_RECV(masas, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
-!			call MPI_RECV(densidades, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
+			call MPI_RECV(densidades, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
 			call MPI_RECV(pos_x, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
 			call MPI_RECV(pos_y, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
 			call MPI_RECV(pos_z, N, MPI_DOUBLE_PRECISION, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, status, errcode)
