@@ -78,7 +78,8 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 	real*8 vector_posicion(0:2)
 	character(len=256) :: path	
 
-	call guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	!call guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
+	call guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
 end subroutine
 
 SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
@@ -91,9 +92,9 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 
 	path = trim(adjustl(adjustr(path)))
 
-	call CargarNubeNetCDF(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+	!call CargarNubeNetCDF(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 
-	!call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
+	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 	
 end subroutine
 

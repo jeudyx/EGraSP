@@ -140,7 +140,7 @@ program principal
 		!En este punto, el archivo netCDF esta abierto		
 		call CargarNube(path, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, distancias, densidades, N)
 		write(*,*) "Done CargarNube"
-		call actualizarSimParamsNetCDF(path, dt, temperatura, umbralBH, n_vecinos, save_at)
+!!!		call actualizarSimParamsNetCDF(path, dt, temperatura, umbralBH, n_vecinos, save_at)
 		
 		dist_max = maxval(distancias)		
 
@@ -470,9 +470,9 @@ program principal
 		if(myid == 0 .and. i > 0 .and. MOD(i, save_at) == 0) then									
 			Write(filename, '(i10)' )  i
 			!write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs"
-			!old CSV call path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
-			!old CSV call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)						
-			call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
+			path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
+			call guardarNube(UNIT_NUBE, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)						
+			!!! NEW NETCDF call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)
 		endif			
 
 	enddo
