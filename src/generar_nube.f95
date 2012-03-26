@@ -499,7 +499,9 @@ program principal
 	
 	v_x = v_x + veloc_x
 	
-	path = "./datos/" // trim(cloud_title) // ".nc"
+!	path = "./datos/" // trim(cloud_title) // ".nc"
+
+	path = "./datos/" // trim(cloud_title) // ".csv"
 
 	call crearNubeNetCDF(path, N, Masa_Nube, Densidad_Nube, Variacion, beta, tipo, altura, Radio_Nube, tff, masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG)
 	call guardarNube(0, path, N, masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, densidades)	

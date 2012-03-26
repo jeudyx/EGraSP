@@ -102,9 +102,14 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 
 			!Utilizo las posiciones y velocidades actuales para el calculo de la aceleracion
 
-			acc_grav_vect(0) = 0.0D+0
-			acc_grav_vect(1) = 0.0D+0
-			acc_grav_vect(2) = 0.0D+0
+!			acc_grav_vect(0) = 0.0D+0
+!			acc_grav_vect(1) = 0.0D+0
+!			acc_grav_vect(2) = 0.0D+0
+
+			acc_grav_vect = 0.0D+0
+			acc_presion_vect = 0.0D+0
+			acc_visc_vect =  0.0D+0
+
 
 			!Calculo la aceleración basado en las posiciones predichas
 			p = construirParticula(i, masas(i), pos_predictor_x(i), pos_predictor_y(i), pos_predictor_z(i), v_x(i), v_y(i), v_z(i), densidades(i))
@@ -114,13 +119,10 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 
 			lista_vecinos = matriz_vecinos(i, 0:n_vecinos-1)
 
+
 			gradiente_presion = GradientePresion(i, n_vecinos, lista_vecinos, presiones, N, pos_predictor_x, pos_predictor_y, pos_predictor_z, masas, densidades)
 
 			acc_presion_vect = gradiente_presion / (densidades_locales(i) / 1000.0D+0)
-
-			!OJO, aqui ya está tomando en cuenta los componentes de la aceleración por la energía térmica (presión del gas)						
-
-			!OJO 2012-01-08 Cambia suma por resta (aceleracion presion)
 
 			!Ecuacion de movimiento: gravedad - presion
 
@@ -151,18 +153,14 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 
 			!01/16/2012 Cambio manera de incorporar viscosidad artificial
 			!Con la velocidad predicha, calculo la viscosidad artificial
-
-			acc_visc_vect = ArtificialViscosityAcc(i, temperatura, n_vecinos, lista_vecinos, N, pos_predictor_x, pos_predictor_y, pos_predictor_z, v_x, v_y, v_z, densidades, densidades_locales, masas)
+!!!OJO 03/24/2012 pruebas quitando presion de gas
+!!!			acc_visc_vect = ArtificialViscosityAcc(i, temperatura, n_vecinos, lista_vecinos, N, pos_predictor_x, pos_predictor_y, pos_predictor_z, v_x, v_y, v_z, densidades, densidades_locales, masas)
 
 			!Incorporo componentes de velocidad por aceleracion de viscosidad artificial
 
-			v_x(i) = v_x(i) + (acc_visc_vect(0) * (dt * SEGS_YR))
-			v_y(i) = v_y(i) + (acc_visc_vect(1) * (dt * SEGS_YR))
-			v_z(i) = v_z(i) + (acc_visc_vect(2) * (dt * SEGS_YR))
-
-			if(.false. .and. p%id == 32) then
-				write(*,*) myid, p%id, " En dinamica.pasoLeapFrog. Particula: ", p%id, " - Velocidades: ", v_x(i), v_y(i), v_z(i), " - aceleracion gravedad: ", acc_grav_vect, magnitudVector3D(acc_grav_vect), " - aceleracion presion: ", acc_presion_vect, magnitudVector3D(acc_presion_vect), " - aceleracion viscosidad: ", acc_visc_vect, magnitudVector3D(acc_visc_vect), " - Gradiente presion: ", gradiente_presion, magnitudVector3D(gradiente_presion), " - Densidad(i): ", densidades_locales(i)!, " - Vecinos: ", lista_vecinos
-			endif
+!!!			v_x(i) = v_x(i) + (acc_visc_vect(0) * (dt * SEGS_YR))
+!!!			v_y(i) = v_y(i) + (acc_visc_vect(1) * (dt * SEGS_YR))
+!!!			v_z(i) = v_z(i) + (acc_visc_vect(2) * (dt * SEGS_YR))
 
 			!Actualizo las posiciones reales con esta velocidad (del siguiente medio ts) y la actual
 

@@ -71,8 +71,9 @@ program principal
 	
 		!print *, simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
-		!no longer needed with NetCDF cmdpath = "./datos/resultados/" // TRIM(adjustl(simtit))
-		!	CALL system("mkdir " // cmdpath)
+		!no longer needed with NetCDF 
+		cmdpath = "./datos/resultados/" // TRIM(adjustl(simtit))
+		CALL system("mkdir " // cmdpath)
 
 	endif
 
@@ -133,7 +134,17 @@ program principal
 
 		!Solo el root va a cargar la nube desde file
 
-		path = "./datos/" // trim(simtit) // ".nc"
+!!		path = "./datos/" // trim(simtit) // ".nc"
+
+		if(initial_i == 0) then
+			path = "./datos/" // trim(simtit) // ".csv"
+		else
+
+			Write(filename, '(i10)' )  initial_i
+			!write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs"
+			path = "./datos/resultados/" // TRIM(adjustl(simtit)) // "/" // TRIM(adjustl(filename)) // "_step.csv"
+			write(*,*) "Cargando Path: ", path
+		endif
 		
 		!write(*,*) "Loading data from: ", path
 
