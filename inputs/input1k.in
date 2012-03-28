@@ -7,8 +7,8 @@
  beta = 0.16D0,
  n_vecinos = 35,
  dt = 10.0D0,
- j = 2500,
+ j = 10000,
  save_at = 100,
- soft_len = 1.0E-5,
+ soft_len = 5.0E-4,
  tolerancia_colision = 0.0D0
 /

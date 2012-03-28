@@ -475,7 +475,7 @@ program principal
 		v_z(i) = 0.0D+0
 	enddo
 	
-	soft_len = calcularRadio(masa_min, Densidad_Nube) / PARSEC_CMS
+	soft_len = calcularRadio(Masa_Nube / N, Densidad_Nube) / PARSEC_CMS
 
 	if(tipo == 0) then
 		call calcularPosicionesEsfera(N, Masa_Nube, Densidad_Nube, masas, pos_x, pos_y, pos_z, Radio_Nube)

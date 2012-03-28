@@ -198,22 +198,28 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 				write(*,*) "Cubo dado como argumento"
 				call imprimirCubo(cube)
 				write(*,*) "---------------------------------"
-				write(*,*) "Imprimo cubos hijos"
-				do j = 0, 7, 1
-					write(*,*) "Info de hijo: ", Arbol%hijos(j)%id, Arbol%hijos(j)%id_particula, Arbol%hijos(j)%n_particulas
-					tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
-					call imprimirCubo(tmp_cube)
-					write(*,*) "---------------------------------"
-				enddo						
+				!write(*,*) "Imprimo cubos hijos"
+				!do j = 0, 7, 1
+				!	write(*,*) "Info de hijo: ", Arbol%hijos(j)%id, Arbol%hijos(j)%id_particula, Arbol%hijos(j)%n_particulas
+				!	tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
+				!	call imprimirCubo(tmp_cube)
+				!	write(*,*) "---------------------------------"
+				!enddo						
 
 				j = 0
 				!mato al programa para analizar
 				j = 10 / j
+				write(*,*) "MUERE"				
+				call MPI_abort (1)
 			endif
 		endif
 	else			
 		!Nodo externo: era una hoja, se tendrá que dividir
-					
+		
+		if(Arbol%id_particula == 971) then
+			write(*,*) "Ojo, existia particula 971"
+		endif
+			
 		!If node x is an external node, say containing a body named c, then there are two bodies b and c in the same region
 		!Subdivide the region further by creating four children. 
 		
@@ -253,6 +259,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 				!Si es la primera vez que el hijo se crea, se asigna, sino, se mantiene el valor anterior
 				Arbol%hijos(j)%hijos_creados = .false. 
 			endif
+			
 			Arbol%hijos(j)%n_particulas = 0
 			Arbol%hijos(j)%centroide(0) = hijos_nuevos(j)%centroide(0)
 			Arbol%hijos(j)%centroide(1) = hijos_nuevos(j)%centroide(1)
@@ -287,11 +294,11 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		tmp_centromasas = centroMasa(p%masa, p%posicion(0), p%posicion(1), p%posicion(2), Arbol%masa, Arbol%centro_masa(0), Arbol%centro_masa(1), Arbol%centro_masa(2))
 
 		Arbol%masa = Arbol%masa + p%masa
+		
 		!OJO, deberia actualizar densidad?
 		Arbol%centro_masa(0) = tmp_centromasas(0)
 		Arbol%centro_masa(1) = tmp_centromasas(1)
 		Arbol%centro_masa(2) = tmp_centromasas(2)
-
 
 		!Tengo que redistribuir tanto a la nueva particula p, como a la que existia -> Arbol%id_particula
 		!Para eso busco en cual de los hijos recien creados está contenida
@@ -299,8 +306,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		!write(*,*) "Rescatando informacion de particula existente q. Id: ", Arbol%id_particula, ", densidad: ", Arbol%densidad
 
 		q = construirParticula(Arbol%id_particula, masas(Arbol%id_particula), coordenadas_x(Arbol%id_particula), coordenadas_y(Arbol%id_particula), coordenadas_z(Arbol%id_particula), 0.0D+0, 0.0D+0, 0.0D+0, Arbol%densidad)
-		
-		
+				
 		do j = 0, 7, 1			
 			!obtengo el cubo que corresponde a cada hijo
 						
@@ -335,9 +341,9 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 				return
 			endif
 		enddo		
-		write(*,*) "OJO, en nodo externo no se encontró la nueva o la existente: ", encontrado_nuevo, encontrado_existente, "P y Q id's: ", p%id, q%id, "ID nodo:", Arbol%id, "Posicion particula nueva: ", p%posicion
+		write(*,*) "OJO, en nodo externo no se encontro la nueva o la existente: ", encontrado_nuevo, encontrado_existente, "P y Q id's: ", p%id, q%id, "ID nodo:", Arbol%id, "Posicion particula nueva: ", p%posicion, "Posicion de particula existente: ", q%posicion
 		!Debugging de problema de no deteccion en 10/13/2011
-		if(.true.) then
+		if(.false.) then
 
 			!write(*,*) "--------------------------"
 
@@ -346,19 +352,31 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			write(*,*) "--------------------------"
 
 			write(*,*) "Cubo de nodo actual"
-			tmp_cube = CrearCubo(Arbol%radio, Arbol%centroide)
-			call imprimirCubo(tmp_cube)
-			write(*,*) "Cubo dado como argumento"
+!!!			tmp_cube = CrearCubo(Arbol%radio, Arbol%centroide)
+!!!			call imprimirCubo(tmp_cube)
 			call imprimirCubo(cube)
 			write(*,*) "---------------------------------"
-			write(*,*) "Imprimo cubos hijos"
+			write(*,*) "Info de p: (id, posicion) ", p%id, p%posicion
+			write(*,*) "Info de q: (id, posicion) ", q%id, q%posicion
+			write(*,*) "Contiene a p? ", CuboContienePunto(cube, p%posicion), "Radio y centroide: ", Arbol%radio, Arbol%centroide
+			write(*,*) "Contiene a q? ", CuboContienePunto(cube, q%posicion)
+			write(*,*) "Info de hijos"
 			do j = 0, 7, 1
 				write(*,*) "Info de hijo: ", Arbol%hijos(j)%id, Arbol%hijos(j)%id_particula, Arbol%hijos(j)%n_particulas
 				tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
-				call imprimirCubo(tmp_cube)
-				write(*,*) "---------------------------------"
-			enddo						
+				write(*,*) "Hijo Contiene a p? ", CuboContienePunto(tmp_cube, p%posicion), "Radio y centroide: ", Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide
+				write(*,*) "Hijo Contiene a q? ", CuboContienePunto(tmp_cube, q%posicion)
+			!	call imprimirCubo(tmp_cube)
+			!	write(*,*) "---------------------------------"
+			enddo			
+
 		endif
+		write(*,*) "MUERE"				
+		call MPI_abort (1)
+
+		j = 0
+		!mato al programa para analizar
+		j = 10 / j			
 		
 	endif
 

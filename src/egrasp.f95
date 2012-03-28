@@ -69,6 +69,8 @@ program principal
 		read(ipunit, simparam, err=104)
 		close(ipunit)
 	
+		soft_len = soft_len * PARSEC_MTS
+
 		!print *, simtit,N,path,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
 
 		!no longer needed with NetCDF 
@@ -83,6 +85,7 @@ program principal
 	call MPI_BCAST(j,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(save_at,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(umbralBH,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(soft_len,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(dt,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(tolerancia_colision,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(beta,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
@@ -357,6 +360,7 @@ program principal
 			Nproc = Nproc + (N - (numprocs * Ni))
 		endif		
 		
+		!write(*,*) myid, "----------LLAMO A pasoLeapFrog---------- i :", i
 		call pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas, pos_x, pos_y, pos_z, densidades, densidades_locales, v_x, v_y, v_z, acc_x, acc_y, acc_z, dt, umbralBH, tolerancia_colision, beta, n_vecinos, matriz_vecinos, presiones, soft_len, temperatura, myid)
 
 		if(myid == 0) then

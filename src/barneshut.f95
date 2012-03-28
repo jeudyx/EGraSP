@@ -48,6 +48,9 @@ recursive function calcularAccGravBH(p, Arbol, umbral, soft_len) result(acc_vect
 		if(.not. Arbol%id_particula == p%id .and. Arbol%id_particula > 0) then
 !			write(*,*) "Llego a hoja. Particula: ", Arbol%id_particula
 			q = construirParticula(Arbol%id_particula, Arbol%masa/SOLAR_MASS_KG, Arbol%centro_masa(0), Arbol%centro_masa(1), Arbol%centro_masa(2), 0.0D+0, 0.0D+0, 0.0D+0, Arbol%densidad)
+
+			!write(*,*) "Creando softening leght. Densidades: ", p%densidad, q%densidad, q%masa, q%id
+
 			acc_vect = aceleracion_g_vect(p%posicion*PARSEC_MTS, q%posicion*PARSEC_MTS, q%masa, soft_len)
 			return
 		else
@@ -61,13 +64,16 @@ recursive function calcularAccGravBH(p, Arbol, umbral, soft_len) result(acc_vect
 
 		!La comparacion con el umbral es lado / distancia
 
-		radio1 = calcularRadio(p%masa / SOLAR_MASS_KG, p%densidad) / PARSEC_CMS
-
 		q = construirParticula(Arbol%id_particula, Arbol%masa/SOLAR_MASS_KG, Arbol%centro_masa(0), Arbol%centro_masa(1), Arbol%centro_masa(2), 0.0D+0, 0.0D+0, 0.0D+0, 0.0D+0)
+
+		!write(*,*) "Comparando posiciones: P: ", p%posicion, "Q: ", q%posicion, "Distancia cruda: ", distanciaParticulas(p,q)
 
 		distancia12 = distanciaParticulas(p,q)
 
+
 		if( (lado / distancia12) < umbral) then
+
+		 	!If s/d < umbral, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
 
 		 	acc_vect = aceleracion_g_vect(p%posicion*PARSEC_MTS, q%posicion*PARSEC_MTS, q%masa, soft_len)
 
@@ -85,6 +91,7 @@ recursive function calcularAccGravBH(p, Arbol, umbral, soft_len) result(acc_vect
 !				write(*,*) "Sobre Hijo: ", i, " ID nodo: ", Arbol%hijos(i)%id
 
 				Hijo => Arbol%hijos(i)
+
 				tmp_acc_vect = calcularAccGravBH(p, Hijo, umbral, soft_len)
 				acc_vect(0) = acc_vect(0) + tmp_acc_vect(0)
 				acc_vect(1) = acc_vect(1) + tmp_acc_vect(1)
