@@ -28,7 +28,7 @@ program principal
 	real*8 dpar(0:1)
 	type(OctreeNode), POINTER :: Arbol
 	type(OctreeNode), POINTER ::  NodosParticulas(:)
-	real*8 dt, umbralBH, tolerancia_colision, dist_max, beta, temperatura
+	real*8 dt, umbralBH, tolerancia_colision, dist_max, beta, temperatura, soft_len
 	type(Particula) p	
 	character(len=256) :: path, simtit, cmdpath
 	logical hubo_colisiones
@@ -46,7 +46,7 @@ program principal
 	integer response(1)
 	integer ipunit
 	
-	namelist /simparam/ simtit,N,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,tolerancia_colision
+	namelist /simparam/ simtit,N,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,soft_len,tolerancia_colision
 
 	call MPI_INIT(errcode)	
 	
@@ -54,7 +54,7 @@ program principal
 	call MPI_COMM_SIZE( MPI_COMM_WORLD, numprocs, errcode )	
 	
 	write(*,*) "MPI inicializado", " Process ", myid, " of ", numprocs, " is alive"
-	!Solamente el root va a pedir los parámetros
+	!Solamente el root va a pedir los parï¿½metros
 	
 	!n_vecinos = CANTIDAD_VECINOS
 	
@@ -77,7 +77,7 @@ program principal
 
 	endif
 
-	!Transmito los parámetros a los demás nodos
+	!Transmito los parÃ¡metros a los demÃ¡s nodos
 	call MPI_BCAST(N,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(initial_i,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(j,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
@@ -357,7 +357,7 @@ program principal
 			Nproc = Nproc + (N - (numprocs * Ni))
 		endif		
 		
-		call pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas, pos_x, pos_y, pos_z, densidades, densidades_locales, v_x, v_y, v_z, acc_x, acc_y, acc_z, dt, umbralBH, tolerancia_colision, beta, n_vecinos, matriz_vecinos, presiones, temperatura, myid)
+		call pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas, pos_x, pos_y, pos_z, densidades, densidades_locales, v_x, v_y, v_z, acc_x, acc_y, acc_z, dt, umbralBH, tolerancia_colision, beta, n_vecinos, matriz_vecinos, presiones, soft_len, temperatura, myid)
 
 		if(myid == 0) then
 			tag = MPI_ANY_TAG
@@ -437,7 +437,7 @@ program principal
 		if(myid == 0) then
 			tag = 0
 			
-			!07/02/2012 Ajusta densidades de particulas a la densidad local para la siguiente iteración
+			!07/02/2012 Ajusta densidades de particulas a la densidad local para la siguiente iteraciÃ³n
 			densidades(0:N-1) = densidades_locales(0:N-1)
 
 			!write(*,*) "----------------"			
@@ -510,3 +510,4 @@ program principal
 	call MPI_abort (errcode)
 
 end
+

@@ -3,7 +3,7 @@ MODULE Fuerzas
 
 !Modulo que contiene el calculo de fuerzas/aceleraciones (gravedad, presion, campo magnetico, etc)
 
-function calcularAceleracion(p, Arbol, umbralBH, N) result(acc_vect)
+function calcularAceleracion(p, Arbol, umbralBH, soft_len, N) result(acc_vect)
 
 	use BarnesHut
 	use Tipos
@@ -16,7 +16,7 @@ function calcularAceleracion(p, Arbol, umbralBH, N) result(acc_vect)
 	
 	type(OctreeNode), POINTER :: Arbol
 	
-	real*8 umbralBH
+	real*8 umbralBH, soft_len
 		
 	integer j, i, N	
 	
@@ -32,7 +32,7 @@ function calcularAceleracion(p, Arbol, umbralBH, N) result(acc_vect)
 		return
 	else
 		!De momento tengo solo la parte gravitacional (10/7/2011)
-		acc_vect = calcularAccGravBH(p, Arbol, umbralBH)
+		acc_vect = calcularAccGravBH(p, Arbol, umbralBH, soft_len)
 		
 		return	
 	endif
@@ -40,4 +40,5 @@ function calcularAceleracion(p, Arbol, umbralBH, N) result(acc_vect)
 end function
 
 END MODULE Fuerzas
+
 

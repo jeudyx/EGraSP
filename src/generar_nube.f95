@@ -414,7 +414,7 @@ program principal
 	!Masa en masas solares
 	!Variacion en porcentaje de 0 a 1
 	
-	real*8 :: Masa_Nube, Masa_Nube_i, Variacion, Densidad_Nube, Radio_Nube, tff, w
+	real*8 :: Masa_Nube, Masa_Nube_i, Variacion, Densidad_Nube, Radio_Nube, tff, w, masa_min, soft_len
 	real*8 :: beta, altura, despl_x, despl_y, despl_z, n_densidad, veloc_x
 	integer :: N, Ni, i, tipo, n_perturbacion	
 
@@ -427,7 +427,7 @@ program principal
 	
 	integer ipunit
 
-	namelist /generateparam/ cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
+	namelist /generateparam/ cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura	
 
 	altura = 0.0D+0
 
@@ -443,6 +443,8 @@ program principal
 
 	!print *, cloud_title,N,Masa_Nube,Densidad_Nube,Variacion,beta,tipo,despl_x,despl_y,despl_z,veloc_x,n_perturbacion,n_densidad,altura
 	
+	masa_min = Masa_Nube
+
 	Masa_Nube_i = Masa_Nube
 	Variacion = Variacion / 100.0
 
@@ -463,6 +465,9 @@ program principal
 
 	do i = 0, N - 1, 1
 		masas(i) = asignarMasa(Masa_Nube_i, Ni, Variacion)
+		if(masa_min > masas(i)) then
+			masa_min = masas(i)
+		endif
 		densidades(i) = Densidad_Nube
 		!temporalmente, las velocidades empiezan en cero
 		v_x(i) = 0.0D+0
@@ -470,6 +475,8 @@ program principal
 		v_z(i) = 0.0D+0
 	enddo
 	
+	soft_len = calcularRadio(masa_min, Densidad_Nube) / PARSEC_CMS
+
 	if(tipo == 0) then
 		call calcularPosicionesEsfera(N, Masa_Nube, Densidad_Nube, masas, pos_x, pos_y, pos_z, Radio_Nube)
 	else if(tipo == 1) then
@@ -495,7 +502,7 @@ program principal
 		call calcularDistribucionVelocidad(N, w, v_x, v_y, v_z, pos_x, pos_y, pos_z)
 	endif
 	
-	write(*,*) 'Radio estimado: ', Radio_Nube, ' pc', " - ", Radio_Nube*PARSEC_CMS, " cms, Free fall time: ", tff, " Velocidad angular (rad/s): ", w, "- Masa Jeans para 10K: ", masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG
+	write(*,*) 'Radio estimado: ', Radio_Nube, ' pc', " - ", Radio_Nube*PARSEC_CMS, " cms, Free fall time: ", tff, " Velocidad angular (rad/s): ", w, "- Masa Jeans para 10K: ", masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG, " Masa minima: ", masa_min, " Softening length sugerido: ", soft_len, " densidad: ", Densidad_Nube
 	
 	v_x = v_x + veloc_x
 	
