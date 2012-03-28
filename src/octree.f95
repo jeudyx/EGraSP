@@ -215,11 +215,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		endif
 	else			
 		!Nodo externo: era una hoja, se tendrá que dividir
-		
-		if(Arbol%id_particula == 971) then
-			write(*,*) "Ojo, existia particula 971"
-		endif
-			
+					
 		!If node x is an external node, say containing a body named c, then there are two bodies b and c in the same region
 		!Subdivide the region further by creating four children. 
 		
