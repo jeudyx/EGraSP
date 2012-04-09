@@ -54,7 +54,7 @@ program principal
 	call MPI_COMM_SIZE( MPI_COMM_WORLD, numprocs, errcode )	
 	
 	write(*,*) "MPI inicializado", " Process ", myid, " of ", numprocs, " is alive"
-	!Solamente el root va a pedir los par�metros
+	!Solamente el root va a pedir los parámetros
 	
 	!n_vecinos = CANTIDAD_VECINOS
 	

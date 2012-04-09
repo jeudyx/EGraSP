@@ -6,8 +6,9 @@ PROGRAMS = prueba egrasp generar_nube
 
 all: $(PROGRAMS)
 	
-prueba: almacenamiento.mod egrasp_ncio.mod
-	$(FC) ./src/prueba.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o prueba *.o
+prueba: almacenamiento.mod fuerzas.mod fisica.mod octree.mod constantes.mod funciones.mod
+	$(FC) ./src/prueba.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o pruebas *.o
+	rm *.mod *.o
 
 egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod egrasp_ncio.mod
 	$(FC) ./src/egrasp.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o egrasp *.o
@@ -62,5 +63,5 @@ dinamica.mod: barneshut.mod tipos.mod constantes.mod vectores.mod auxiliar.mod f
 clean:
 	rm -f *.mod *.o
 	rm -f *~ $(PROGRAMS)
-	rm -rf datos/*
-	mkdir datos/resultados
+#	rm -rf datos/*
+#	mkdir datos/resultados
