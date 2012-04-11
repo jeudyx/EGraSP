@@ -1,6 +1,6 @@
 &generateparam
  cloud_title = 'caso1',
- N = 5000,
+ N = 1000,
  Masa_Nube = 1.0D0,
  Densidad_Nube = 1.3E-18,
  Variacion = 0.0D0,

@@ -9,10 +9,10 @@ implicit none
 	real*8, PARAMETER :: UA = 149597870.7				!kilometros
 	real*8, PARAMETER :: G = 6.67384E-11				!Newtons
 	real*8, PARAMETER :: G_CGS = 6.67384E-8				!cgs
-	real*8, PARAMETER :: SEGS_YR = 31536000.0D+0			!Cantidad de segundos en un año de 365 días
-	real*8, PARAMETER :: MASA_H_GR = 1.67E-24			!Masa del hidrogeno atómico en gramos
+	real*8, PARAMETER :: SEGS_YR = 31536000.0D+0			!Cantidad de segundos en un aÃ±o de 365 dÃ­as
+	real*8, PARAMETER :: MASA_H_GR = 1.67E-24			!Masa del hidrogeno atÃ³mico en gramos
 	real*8, PARAMETER :: MASA_H2_GR = 3.9E-24			!Masa del hidrogeno molecular en gramos
-	real*8, PARAMETER :: PESO_ATOMICO_H = 1.00794			!Peso atómico de hidrogeno
+	real*8, PARAMETER :: PESO_ATOMICO_H = 1.00794			!Peso atÃ³mico de hidrogeno
 	real*8, PARAMETER :: PESO_MOLECULAR_H = 2.371 			!2.01594 !Peso molecular de H2
 	real*8, PARAMETER :: K_BOLTZMANN = 1.3806504E-23		!Constante de Bolztmann en J/K
 	real*8, PARAMETER :: ATOMIC_MASS_CONSTANT = 1.660538782E-27 	!en Kg

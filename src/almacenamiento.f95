@@ -142,7 +142,7 @@ subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, 
 		vector_posicion(1) = coordenadas_y(i)
 		vector_posicion(2) = coordenadas_z(i)
 		radio = magnitudVector3D(vector_posicion)
-		!No escribo si masa es menor que cero (señal de que la partícula fue destruida)
+		!No escribo si masa es menor que cero (seÃ±al de que la partÃ­cula fue destruida)
 		
 		if(masas(i) > 0 ) then
 			write(unidad,*) coordenadas_x(i), ",", coordenadas_y(i), ",", coordenadas_z(i), ",", v_x(i), ",", v_y(i), ",", v_z(i), ",", radio, ",", masas(i), ",", densidades(i)

@@ -1,3 +1,19 @@
+
+logical function imprimir(i)
+
+	implicit none
+
+	integer i
+
+	!if(i == 77 .or. i == 1670 .or. i == 2440 .or. i == 3331 .or. i == 4021 .or. i == 5198 .or. i == 6366 .or. i == 7175 .or. i == 8017 .or. i == 9127) then
+	if(i == 77 .or. i == 2440 .or. i == 4021 .or. i == 6366 .or. i == 9127) then
+		imprimir = .true.
+	else
+		imprimir = .false.
+	endif
+
+end function
+
 program principal
 	
 	use Almacenamiento
@@ -23,8 +39,8 @@ program principal
 	type(Particula) p
 	type(OctreeNode), POINTER :: Arbol	
 	type(OctreeNode), POINTER ::  NodosParticulas(:)
-	real*8 maxdist
-	logical verbose
+	real*8 maxdist, theta
+	logical verbose, imprimir
 	integer i, N
 
 	ALLOCATE(Arbol)
@@ -42,6 +58,9 @@ program principal
 
 	write(*,*) "Número de partículas: "	
 	read(*,*) N	
+
+	write(*,*) "Theta:"
+	read(*,*), theta
 
 	write(*,*) "Imprimir detalle (y/n): "	
 	read(*,*) detalle	
@@ -104,7 +123,7 @@ program principal
 	acc_vect = 0.0D+0
 	write(*,*) "------------------------"
 	call date_and_time (time=tiempoI, date=fechaI)
-	acc_vect = calcularAceleracion(p, Arbol, 0.7D+0, 6.75D-4, N)
+	acc_vect = calcularAceleracion(p, Arbol, theta, 0.0D+0, N)
 	call date_and_time (time=tiempoF, date=fechaF)
 	ag_bh = magnitudVector3D(acc_vect)
 	write(*,*) "Aceleración gravitacional barnes-hut. Valor: ", acc_vect, ag_bh
@@ -114,7 +133,7 @@ program principal
 	do i = 0, N-1, 1
 		p = construirParticula(i, masas(i), pos_x(i), pos_y(i), pos_z(i), v_x(i), v_y(i), v_z(i), densidades(i))
 		acc_vect = calcularAceleracionGFB(p, pos_x, pos_y, pos_z, masas, N)
-		if(verbose) then		
+		if(verbose .and. imprimir(i)) then		
 			write(*,*) i, ",", acc_vect, ",", magnitudVector3D(acc_vect), ","
 		endif
 !		acc_vect_total(0) = acc_vect_total(0) + acc_vect(0)
@@ -129,8 +148,8 @@ program principal
 	call date_and_time (time=tiempoI, date=fechaI)
 	do i = 0, N-1, 1
 		p = construirParticula(i, masas(i), pos_x(i), pos_y(i), pos_z(i), v_x(i), v_y(i), v_z(i), densidades(i))
-		acc_vect = calcularAceleracion(p, Arbol, 0.7D+0, 5.0D-4, N)
-		if(verbose) then		
+		acc_vect = calcularAceleracion(p, Arbol, theta, 0.0D+0, N)
+		if(verbose .and. imprimir(i)) then		
 			write(*,*) i, ",", acc_vect, ",", magnitudVector3D(acc_vect), ","
 		endif
 !		acc_vect_total(0) = acc_vect_total(0) + acc_vect(0)

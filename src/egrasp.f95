@@ -58,6 +58,11 @@ program principal
 	
 	!n_vecinos = CANTIDAD_VECINOS
 	
+	tiempoI = '\0'
+	tiempoF = '\0'
+	fechaI = '\0'
+	fechaF = '\0'
+
 	if(myid == 0) then
 	
 		call getarg(0, prgname)

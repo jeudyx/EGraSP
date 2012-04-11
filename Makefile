@@ -1,8 +1,8 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-500 -O3
+FCFLAGS = -ffree-line-length-1000 -O3
 
-PROGRAMS = prueba egrasp generar_nube
+PROGRAMS = egrasp generar_nube
 
 all: $(PROGRAMS)
 	

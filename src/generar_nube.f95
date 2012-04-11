@@ -29,7 +29,7 @@ subroutine PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, densidad, n_perturba
 	
 	segmento = (radio*2.0D+0) / n_perturbacion
 	
-	write(*,*) "TamaÒo de segmento: ", segmento
+	write(*,*) "Tama√±o de segmento: ", segmento
 	
 	cambio_signo = .false.
 		
@@ -57,7 +57,7 @@ subroutine PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, densidad, n_perturba
 		pos_y(idx) = 0.0D+0
 		pos_z(idx) = 0.0D+0
 	
-		!Tiene que reacomodar partÌculas cerca a particula en puntos de perturbacion hasta que densidad local sea 10 veces la promedio
+		!Tiene que reacomodar part√≠culas cerca a particula en puntos de perturbacion hasta que densidad local sea 10 veces la promedio
 		
 		CALL init_random_seed()
 		
@@ -104,7 +104,7 @@ subroutine PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, densidad, n_perturba
 		call Vecinos(NodosParticulas(idx), NodosParticulas, NodosParticulas(idx), N, detectados, n_vecinos, lista_vecinos, distancias_vecinos, 0, NIVEL_MAX_VECINOS, 0)
 		!
 		do while(.not. condicion_densidad)
-			!Hay que acercar los vecinos a la particula, empezando de los m·s lejanos			
+			!Hay que acercar los vecinos a la particula, empezando de los m√°s lejanos			
 			do itr = 0, n_vecinos - 1, 1
 				indices_vecinos(itr) = itr
 			enddo
@@ -165,7 +165,7 @@ subroutine PerturbarDensidad(N, pos_x, pos_y, pos_z, masas, densidad, n_perturba
 				
 				!write(*,*) "DESPUES: Posicion de vecino: ", vector_posicion, " - Posicion particula: ", vector_posicion_part, " Distancia: ", magnitudVector3D(diferenciaVectores3D(vector_posicion, vector_posicion_part))
 				
-				!Compruebo si se alcanzÛ la densidad deseada
+				!Compruebo si se alcanz√≥ la densidad deseada
 				
 				densidad_local = calcularDensidadLocal(N, idx, lista_vecinos, n_vecinos, pos_x, pos_y, pos_z, masas)
 				
@@ -224,7 +224,7 @@ subroutine calcularDistribucionVelocidad(N, w, v_x, v_y, v_z, pos_x, pos_y, pos_
 		vector_w(2) = seccion
 		
 		!Con el producto cruz entre el vector posicion y el vector w, obtengo los componentes
-		!de la velocidad de rotaciÛn
+		!de la velocidad de rotaci√≥n
 		
 		vector_velocidad = productoCruz3D(vector_w, vector_posicion3D / magnitudVector3D(vector_posicion3D)) * PARSEC_MTS
 		
