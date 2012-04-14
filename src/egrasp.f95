@@ -498,7 +498,6 @@ program principal
 	enddo
 	
 	if(myid == 0) then
-		call CerrarNubeCDF		
 		tag = MPI_ANY_TAG
 		do i = 1, numprocs - 1, 1
 			call MPI_RECV(response, 1, MPI_INTEGER, i, tag, MPI_COMM_WORLD, status, errcode)

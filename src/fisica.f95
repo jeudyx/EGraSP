@@ -203,23 +203,23 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 		vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
 		vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
 
-!		if(magnitud_pos >= soft_len) then
-!			vector_gradiente(0) = vector_gradiente(0) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(0)) / (magnitud_pos) )
-!			vector_gradiente(1) = vector_gradiente(1) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(1)) / (magnitud_pos) )
-!			vector_gradiente(2) = vector_gradiente(2) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(2)) / (magnitud_pos) )
-!		else
-!			vector_gradiente(0) = vector_gradiente(0) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(0)) / (soft_len) )
-!			vector_gradiente(1) = vector_gradiente(1) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(1)) / (soft_len) )
-!			vector_gradiente(2) = vector_gradiente(2) + (( (presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(2)) / (soft_len) )
-!		endif
+		if(magnitud_pos >= soft_len) then
+			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
+			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
+			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
+		else
+			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / soft_len )
+			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / soft_len )
+			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / soft_len )
+		endif
 		
 	enddo
 	
 !	factor = 0.05
 
-	vector_gradiente(0) = vector_gradiente(0) / (n_vecinos/2)
-	vector_gradiente(1) = vector_gradiente(1) / (n_vecinos/2)
-	vector_gradiente(2) = vector_gradiente(2) / (n_vecinos/2)
+	vector_gradiente(0) = vector_gradiente(0) / (n_vecinos)
+	vector_gradiente(1) = vector_gradiente(1) / (n_vecinos)
+	vector_gradiente(2) = vector_gradiente(2) / (n_vecinos)
 	
 	return
 end function
@@ -243,22 +243,22 @@ real*8 function PresionGasIdeal(densidad, temperatura)
 	
 	exponente = 1.0D+0
 	
-!	if( (densidad / 1.0E-15) <= 0.25D+0) then
-!		exponente = 1.0D+0
-!	else
+	if( (densidad / 1.0E-13) <= 0.25D+0) then
+		exponente = 1.0D+0
+	else
 	
 
-!		if( (densidad / 1.0E-15) > 0.25D+0 .and. (densidad / 1.0E-15) <= 5.0D+0) then
-!			exponente = 1.1D+0
-!		else
-!			if( (densidad / 1.0E-15) .gt. 5.0D+0) then
-!				exponente = 4.0D+0 / 3.0D+0
-!			endif
-!		endif
+		if( (densidad / 1.0E-13) > 0.25D+0 .and. (densidad / 1.0E-13) <= 5.0D+0) then
+			exponente = 1.1D+0
+		else
+			if( (densidad / 1.0E-13) .gt. 5.0D+0) then
+				exponente = 2.0D+0!4.0D+0 / 3.0D+0
+			endif
+		endif
 	
-!	endif
+	endif
 	
-	PresionGasIdeal = ((K_BOLTZMANN / (PESO_MOLECULAR_H * ATOMIC_MASS_CONSTANT)) * temperatura * ((densidad / 1000.0)**exponente))
+	PresionGasIdeal = ((K_BOLTZMANN / (PESO_MOLECULAR_H * ATOMIC_MASS_CONSTANT)) * (temperatura**exponente) * ((densidad / 1000.0)))
 
 	return
 

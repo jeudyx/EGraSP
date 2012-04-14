@@ -10,65 +10,7 @@ MODULE Almacenamiento
 	CONTAINS
 
 
-subroutine actualizarSimParamsNetCDF(path, dt, temperatura, theta, n_vecinos, save_every)
-	use Egrasp_NCIO
-
-	implicit none
-
-	type(SimParameters) params
-	character(len=256) :: path
-	integer n_vecinos, save_every
-	real*8 temperatura, dt, theta
-
-	params%dt = dt
-	params%temperature = temperatura
-	params%BH_theta = theta
-	params%N_neighbour = n_vecinos
-	params%save_every = save_every
-
-	call update_ncio(path,params)
-	
-end subroutine actualizarSimParamsNetCDF
-
-subroutine crearNubeNetCDF(path, N, masa, densidad, variacion, beta, tipo, altura, Radio_Nube, tff, masaJeansH210K)
-
-	use Egrasp_NCIO
-
-	implicit none
-	
-	integer N, i, ncid, status, tipo
-	real*8	masa, densidad, variacion, beta, altura, Radio_Nube, tff, masaJeansH210K
-	character(len=256) :: path
-	type(SimParameters) params
-
-	params%title = "EGraSP - Evolucion Gravitacional de Sistemas de Particulas"
-	params%institution = "Centro de Investigaciones Espaciales- Universidad de Costa Rica"
-	params%source = "Model simulation output"
-	params%comment = ""
-	params%totalmass = masa
-	params%dt = 0.0D+0
-	params%initial_density = densidad
-	params%beta = beta
-	params%temperature = -1.0D+0
-	params%BH_theta = -1.0D+0
-	params%N_neighbour = -1
-	params%save_every = 0
-	params%Radio_Nube = Radio_Nube
-	params%tff = tff
-	params%masaJeansH210K = masaJeansH210K
-
-	call init_ncio(path,N,params)
-
-end subroutine
-
-subroutine CerrarNubeCDF()
-	use Egrasp_NCIO
-	call release_ncio
-end subroutine CerrarNubeCDF
-
 subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
-
-	use Egrasp_NCIO
 
 	implicit none
 	
@@ -96,30 +38,6 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 
 	call CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
 	
-end subroutine
-
-subroutine guardarNubeNetCDF(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
-
-	use Egrasp_NCIO
-	use Vectores
-
-	implicit none
-	
-	integer N, i
-	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1), distancias(0:N-1)
-	real*8 radio
-	real*8 vector_posicion(0:2)
-	character(len=256) :: path
-
-	do i = 0, N - 1, 1
-		vector_posicion(0) = coordenadas_x(i)
-		vector_posicion(1) = coordenadas_y(i)
-		vector_posicion(2) = coordenadas_z(i)
-		distancias(i) = magnitudVector3D(vector_posicion)
-	enddo
-
-	call writerec(N, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
-
 end subroutine
 
 subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, densidades)
@@ -178,21 +96,6 @@ SUBROUTINE CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_
 	enddo
 
 	close(unit=UNIT_NUBE)
-
-END SUBROUTINE
-
-SUBROUTINE CargarNubeNetCDF(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z, distancias, densidades, N)
-	
-	use Constantes
-	use Egrasp_NCIO
-		
-	implicit none
-
-	integer N, i
-	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
-	character(len=256) :: path
-
-	call open_ncio(N,path,coordenadas_x, coordenadas_y, coordenadas_z, v_x, v_y, v_z,masas,densidades,distancias)
 
 END SUBROUTINE
 
