@@ -1,0 +1,17 @@
+&generateparam
+ cloud_title = 'estable',
+ N = 2000,
+ Masa_Nube = 0.25D0
+ Densidad_Nube = 1.0E-18,
+ Variacion = 0.0D0,
+ beta = 0.0D0,
+ tipo=0,
+ despl_x=0.0D0,
+ despl_y=0.0D0,
+ despl_z=0.0D0,
+ veloc_x=0.0D0,
+ n_perturbacion=0,
+ n_densidad=0.0D0,
+ altura=0.0D0
+/
+

@@ -1,0 +1,14 @@
+&simparam
+ simtit = 'caso3',
+ N = 5000,
+ temperatura = 10.0D0,
+ umbralBH = 0.7D0,
+ initial_i = 5000,
+ beta = 0.25D0,
+ n_vecinos = 50,
+ dt = 5.0D0,
+ j = 10000,
+ save_at = 100,
+ soft_len = 6.75E-4,
+ tolerancia_colision = 0.0D0
+/

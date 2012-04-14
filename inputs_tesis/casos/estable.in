@@ -1,0 +1,14 @@
+&simparam
+ simtit = 'estable',
+ N = 2000,
+ temperatura = 10.0D0,
+ umbralBH = 0.7D0,
+ initial_i = 0,
+ beta = 0.0D0,
+ n_vecinos = 100,
+ dt = 10.0D0,
+ j = 10000,
+ save_at = 100,
+ soft_len = 2.0E-3,
+ tolerancia_colision = 0.0D0
+/

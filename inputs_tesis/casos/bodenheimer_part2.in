@@ -1,0 +1,14 @@
+&simparam
+ simtit = 'bodenheimer',
+ N = 1000,
+ temperatura = 10.0D0,
+ umbralBH = 0.75D0,
+ initial_i = 1100,
+ beta = 0.32D0,
+ n_vecinos = 40,
+ dt = 50.0D0,
+ j = 6600,
+ save_at = 20,
+ soft_len = 1.0E-3,
+ tolerancia_colision = 0.0D0
+/
