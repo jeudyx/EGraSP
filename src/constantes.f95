@@ -24,7 +24,7 @@ implicit none
 		
 	integer, PARAMETER :: UNIT_ARBOL = 11
 	integer, PARAMETER :: UNIT_NUBE = 10
-	integer, PARAMETER :: NIVEL_MAX_VECINOS = 1
+	integer, PARAMETER :: NIVEL_MAX_VECINOS = 2
 	integer, PARAMETER :: CANTIDAD_VECINOS = 50
 	
 

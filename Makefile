@@ -7,23 +7,20 @@ PROGRAMS = egrasp generar_nube
 all: $(PROGRAMS)
 	
 prueba: almacenamiento.mod fuerzas.mod fisica.mod octree.mod constantes.mod funciones.mod
-	$(FC) ./src/prueba.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o pruebas *.o
+	$(FC) ./src/prueba.f95 $(FCFLAGS)  -o pruebas *.o
 	rm *.mod *.o
 
-egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod egrasp_ncio.mod
-	$(FC) ./src/egrasp.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o egrasp *.o
+egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod 
+	$(FC) ./src/egrasp.f95 $(FCFLAGS)  -o egrasp *.o
 	
-generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod egrasp_ncio.mod
-	$(FC) ./src/generar_nube.f95 $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -o generar_nube *.o
+generar_nube: constantes.mod auxiliar.mod fisica.mod octree.mod vectores.mod tipos.mod funciones.mod almacenamiento.mod 
+	$(FC) ./src/generar_nube.f95 $(FCFLAGS)  -o generar_nube *.o
 	rm *.mod *.o
 
 constantes.mod: ./src/constantes.f95
 	$(FC) $(FCFLAGS) -c ./src/constantes.f95
 
-egrasp_ncio.mod: ./src/egrasp_ncio.f95 tipos.mod
-	$(FC) $(FCFLAGS) -I/usr/include -lnetcdf -lnetcdff -c ./src/egrasp_ncio.f95
-
-almacenamiento.mod: vectores.mod constantes.mod egrasp_ncio.mod
+almacenamiento.mod: vectores.mod constantes.mod 
 	$(FC) $(FCFLAGS) -c ./src/almacenamiento.f95
 
 tipos.mod: ./src/tipos.f95

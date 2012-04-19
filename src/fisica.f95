@@ -167,7 +167,7 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 	real*8 presiones(0:N-1), pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), masas(0:N-1), densidades(0:N-1)
 	real*8 vector_gradiente(0:2), posicion1(0:2), posicion2(0:2), diferencia(0:2), unitario(0:2)
 	
-	real*8 magnitud_pos, soft_len, factor, diff_presion
+	real*8 magnitud_pos, soft_len, factor, diff_presion, gradiente
 	
 	vector_gradiente = 0.0D+0
 
@@ -199,19 +199,25 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 		
 		diff_presion = presiones(idx_particula) - presiones(lista_vecinos(j))
 
-		vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
-		vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
-		vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
+		gradiente = (diff_presion / diferencia(0)) + (diff_presion / diferencia(1)) + (diff_presion / diferencia(2))
 
-		if(magnitud_pos >= soft_len) then
-			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
-			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
-			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
-		else
-			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / soft_len )
-			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / soft_len )
-			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / soft_len )
-		endif
+		vector_gradiente(0) = vector_gradiente(0) + (gradiente * unitario(0))
+		vector_gradiente(1) = vector_gradiente(1) + (gradiente * unitario(1))
+		vector_gradiente(2) = vector_gradiente(2) + (gradiente * unitario(2))
+
+!		vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
+!		vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
+!		vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
+
+!		if(magnitud_pos >= soft_len) then
+!			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
+!			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
+!			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
+!		else
+!			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / soft_len )
+!			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / soft_len )
+!			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / soft_len )
+!		endif
 		
 	enddo
 	

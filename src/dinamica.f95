@@ -149,7 +149,7 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 			!01/16/2012 Cambio manera de incorporar viscosidad artificial
 			!Con la velocidad predicha, calculo la viscosidad artificial
 
-			acc_visc_vect = ArtificialViscosityAcc(i, temperatura, soft_len, n_vecinos, lista_vecinos, N, pos_predictor_x, pos_predictor_y, pos_predictor_z, v_x, v_y, v_z, densidades, densidades_locales, masas)
+!!!			acc_visc_vect = ArtificialViscosityAcc(i, temperatura, soft_len, n_vecinos, lista_vecinos, N, pos_predictor_x, pos_predictor_y, pos_predictor_z, v_x, v_y, v_z, densidades, densidades_locales, masas)
 
 			if(.false. .and. (p%id == 100 .or. p%id == 500 .or. p%id == 990)) then
 				!write(*,*) myid, i, " En dinamica.pasoLeapFrog. Particula: ", p%id, " - aceleracion neta sin visc: ", acc_x(i), acc_y(i), acc_z(i), " - aceleracion gravedad: ", acc_grav_vect, magnitudVector3D(acc_grav_vect), " - aceleracion presion: ", acc_presion_vect, magnitudVector3D(acc_presion_vect), " Aceleracion viscosidad: ", acc_visc_vect, magnitudVector3D(acc_visc_vect), " - Gradiente presion: ", magnitudVector3D(gradiente_presion), " - Velocidades: ", v_x(i), v_y(i), v_z(i), " - Densidad(i): ", densidades_locales(i)
@@ -158,9 +158,9 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 
 			!Incorporo componentes de velocidad por aceleracion de viscosidad artificial
 
-			v_x(i) = v_x(i) + (acc_visc_vect(0) * (dt * SEGS_YR))
-			v_y(i) = v_y(i) + (acc_visc_vect(1) * (dt * SEGS_YR))
-			v_z(i) = v_z(i) + (acc_visc_vect(2) * (dt * SEGS_YR))
+!!!			v_x(i) = v_x(i) + (acc_visc_vect(0) * (dt * SEGS_YR))
+!!!			v_y(i) = v_y(i) + (acc_visc_vect(1) * (dt * SEGS_YR))
+!!!			v_z(i) = v_z(i) + (acc_visc_vect(2) * (dt * SEGS_YR))
 
 			!Actualizo las posiciones reales con esta velocidad (del siguiente medio ts) y la actual
 
