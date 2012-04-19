@@ -58,10 +58,10 @@ program principal
 	
 	!n_vecinos = CANTIDAD_VECINOS
 	
-	tiempoI = '\0'
-	tiempoF = '\0'
-	fechaI = '\0'
-	fechaF = '\0'
+	tiempoI(:) = '\0'
+	tiempoF(:) = '\0'
+	fechaI(:) = '\0'
+	fechaF(:) = '\0'
 
 	if(myid == 0) then
 	
@@ -511,6 +511,8 @@ program principal
 	call MPI_FINALIZE (errcode)
 	
 	write(*,*) "FIN ", myid
+	
+	stop
 
 100	write ( 6, * ) 'Cannot read namelist: simparam (1): ',  trim(namelistfile)
 	call MPI_abort (errcode)

@@ -4,9 +4,7 @@ program principal
 	use Funciones
 	use Fisica
 	use Tipos 
-	use BarnesHut
-	use Fuerzas	
-
+	
 	implicit none
 
 	real*8 masa, radio, volumen, densidad, tff, acc, dt, temperatura, cs

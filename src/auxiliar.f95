@@ -3,7 +3,7 @@ MODULE Auxiliar
 
 !Funcion para ordenar un arreglo
 !arreglo: arreglo a ordenar
-!N: tamaÃ±o del arreglo
+!N: tamaño del arreglo
 !resultado: respuesta
 
 recursive function ordenar(arreglo, indices, N) result(resultado)

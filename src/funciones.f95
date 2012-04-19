@@ -313,8 +313,7 @@ SUBROUTINE init_random_seed()
           
             DEALLOCATE(seed)
 END SUBROUTINE
-
-
+
 function resolverCuadratica(a, b, c) result(x)
 
 	implicit none

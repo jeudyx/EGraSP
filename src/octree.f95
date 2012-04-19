@@ -70,7 +70,7 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 
 	real*8 posicion(0:2)
 			
-	!Teniendo el √°rbol en memoria, inserto part√≠cula a part√≠cula seg√∫n el algoritmo descrito en http://arborjs.org/docs/barnes-hut
+	!Teniendo el ·rbol en memoria, inserto partÌcula a partÌcula seg˙n el algoritmo descrito en http://arborjs.org/docs/barnes-hut
 		
 	!Cubo que contiene la nube entera	
 	
@@ -85,9 +85,9 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 	
 	Arbol%nivel = 0
 	
-	!Inserta las part√≠culas una a una
+	!Inserta las partÌculas una a una
 	do i = 0, N - 1, 1		
-		!Es un esquema top-down, cada particula la intentar√° insertar siempre desde la ra√≠z		
+		!Es un esquema top-down, cada particula la intentar· insertar siempre desde la raÌz		
 		
 		if(masas(i) > 0.0D+0) then
 			!Solo inserto particulas existentes, no eliminadas
@@ -100,7 +100,7 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 
 END SUBROUTINE
 
-!Inserta una particula en el arbol. "i" es la posicion del nodo dentro del √°rbol donde se intentar√° meter la part√≠cula
+!Inserta una particula en el arbol. "i" es la posicion del nodo dentro del ·rbol donde se intentar· meter la partÌcula
 !k es un apuntador de los nodos usados hasta el momento. Apunta al siguiente nodo disponible para ser usado en el arbol
 
 RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
@@ -181,7 +181,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 					return
 				endif				
 			enddo						
-			write(*,*) "OJO, en nodo interno, nunca encontr√≥ hijo. Particula: ", p%id, "Nodo: (id, id particula, es hoja?, n_particulas) ", Arbol%id, Arbol%id_particula, Arbol%hoja, Arbol%n_particulas,  "Posicion particula: ", p%posicion
+			write(*,*) "OJO, en nodo interno, nunca encontrÛ hijo. Particula: ", p%id, "Nodo: (id, id particula, es hoja?, n_particulas) ", Arbol%id, Arbol%id_particula, Arbol%hoja, Arbol%n_particulas,  "Posicion particula: ", p%posicion
 						
 			!Debugging de problema de no deteccion en 10/01/2011
 			if(.true.) then
@@ -214,12 +214,12 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			endif
 		endif
 	else			
-		!Nodo externo: era una hoja, se tendr√° que dividir
+		!Nodo externo: era una hoja, se tendr· que dividir
 					
 		!If node x is an external node, say containing a body named c, then there are two bodies b and c in the same region
 		!Subdivide the region further by creating four children. 
 		
-		!Divido el cubo en 8 subregiones, cada una se le asignar√° a un hijo, tomando para cada hijo
+		!Divido el cubo en 8 subregiones, cada una se le asignar· a un hijo, tomando para cada hijo
 		!un nodo del "pool" (arbol), avanzando k
 
 
@@ -297,7 +297,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		Arbol%centro_masa(2) = tmp_centromasas(2)
 
 		!Tengo que redistribuir tanto a la nueva particula p, como a la que existia -> Arbol%id_particula
-		!Para eso busco en cual de los hijos recien creados est√° contenida
+		!Para eso busco en cual de los hijos recien creados est· contenida
 		
 		!write(*,*) "Rescatando informacion de particula existente q. Id: ", Arbol%id_particula, ", densidad: ", Arbol%densidad
 
@@ -503,7 +503,7 @@ end function
 
 
 !Busco los puntos minimos y maximos de cada eje entre los 8 vertices, si cada coordenada del punto esta en medio 
-!de ambos para los 3 ejes, est√° dentro
+!de ambos para los 3 ejes, est· dentro
 !PASA A MODULO DE GEOMETRIA O FUNCIONES
 logical function CuboContienePunto(cube, punto)
 	use Tipos
@@ -677,7 +677,7 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	
 	type(OctreeNode), POINTER :: dummy
 	
-	!Reviso adyacentes buscando part√≠culas vecinas
+	!Reviso adyacentes buscando partÌculas vecinas
 	
 	caso_especial = .true.
 
@@ -699,7 +699,7 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	
 !!	write(*,*) "Revisando vecinos de: ", Nodo%id, Nodo%id_particula, " rama actual: ", Arbol%id,  detectados, " padre: ", Nodo%padre%id, " niveles: ", nivel_actual, nivel_maximo
 	
-	!Orden de revision/detecci√≥n (hermanos se refiere a los de Arbol, no a los de Nodo, inicialmente, Arbol y nodo son el mismo):
+	!Orden de revision/detecciÛn (hermanos se refiere a los de Arbol, no a los de Nodo, inicialmente, Arbol y nodo son el mismo):
 		!Hermanos hojas
 		!Vecinos hojas
 		!Expansion de hermanos y vecinos ramas
@@ -707,7 +707,7 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	
 	!Reviso hermanos de Arbol
 	
-	!No reviso hermanos si se est√° en la raiz
+	!No reviso hermanos si se est· en la raiz
 	if(Arbol%nivel > 0) then	
 		do j = 0, 7, 1
 			dummy => Arbol%padre%hijos(j)
@@ -1159,7 +1159,7 @@ RECURSIVE SUBROUTINE VecinosFuerzaBruta(NodosParticulas, IdNodo, N, n_vecinos, l
 
 	distancias = ordenar(distancias, indices_vecinos, N)
 	
-	!Empiezo del elemento 1 porque el elemento cero ser√° el mismo (distancia cero)
+	!Empiezo del elemento 1 porque el elemento cero ser· el mismo (distancia cero)
 !	do i = 1, n_vecinos, 1
 !		lista_vecinos(i - 1) = NodosParticulas(indices_vecinos(i))%id_particula
 !	enddo			

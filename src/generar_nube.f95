@@ -502,7 +502,7 @@ program principal
 		call calcularDistribucionVelocidad(N, w, v_x, v_y, v_z, pos_x, pos_y, pos_z)
 	endif
 	
-	write(*,*) 'Radio estimado: ', Radio_Nube, ' pc', " - ", Radio_Nube*PARSEC_CMS, " cms, Free fall time: ", tff, " Velocidad angular (rad/s): ", w, "- Masa Jeans para 10K: ", masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG, " Masa minima: ", masa_min, " Softening length sugerido: ", soft_len, " densidad: ", Densidad_Nube
+	write(*,*) 'Radio estimado: ', Radio_Nube, ' pc', " - ", Radio_Nube*PARSEC_CMS, " cms, Free fall time: ", tff, " Velocidad angular (rad/s): ", w, "- Masa Jeans para 10, 50 y 100K: ", masaJeansH2(Densidad_Nube, 10.0D+0) / SOLAR_MASS_KG, masaJeansH2(Densidad_Nube, 50.0D+0) / SOLAR_MASS_KG,masaJeansH2(Densidad_Nube, 100.0D+0) / SOLAR_MASS_KG, " Masa minima: ", masa_min, " Softening length sugerido: ", soft_len, " densidad: ", Densidad_Nube
 	
 	v_x = v_x + veloc_x
 	

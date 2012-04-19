@@ -86,12 +86,7 @@ function ArtificialViscosityAcc(idx_particula, temperatura, soft_len, n_vecinos,
 			
 		!write(*,*) idx_particula, lista_vecinos(j), " Viscosidad ij -> II: ", resultado, " mag_r12 ", mag_r12, (mag_r12**4)
 		
-
-		if(mag_r12 >= soft_len) then
-			resultado = resultado * densidad_local_promedio / mag_r12
-		else
-			resultado = resultado * densidad_local_promedio / soft_len
-		endif
+		resultado = resultado * densidad_local_promedio / mag_r12
 		
 		aceleracion_tmp(0) = resultado * r12(0)
 		aceleracion_tmp(1) = resultado * r12(1)
@@ -102,23 +97,18 @@ function ArtificialViscosityAcc(idx_particula, temperatura, soft_len, n_vecinos,
 		aceleracion(2) = aceleracion(2) + aceleracion_tmp(2)
 	enddo
 	
-!	if( (densidad_local1 / densidades(idx_particula)) > 1.0D+0) then
-!		write(*,*) "UY, llego al factor!: ", densidad_local1, densidades(idx_particula)
-!		factor = (densidad_local1 / densidades(idx_particula))
-!		if(factor >= n_vecinos) then
-!			factor = 1.0D+0 * n_vecinos
-!		endif
-!	else
-!		factor = 1.0D+0
-!	endif
-
-	aceleracion(0) = aceleracion(0) / n_vecinos
-	aceleracion(1) = aceleracion(1) / n_vecinos
-	aceleracion(2) = aceleracion(2) / n_vecinos
+	if( (densidad_local1 / densidades(idx_particula)) > 1.0D+0) then
+		factor = (densidad_local1 / densidades(idx_particula))
+		if(factor >= n_vecinos) then
+			factor = 1.0D+0 * n_vecinos
+		endif
+	else
+		factor = 1.0D+0
+	endif
 	
-!	aceleracion(0) = aceleracion(0) / (n_vecinos / factor)
-!	aceleracion(1) = aceleracion(1) / (n_vecinos / factor)
-!	aceleracion(2) = aceleracion(2) / (n_vecinos / factor)
+	aceleracion(0) = aceleracion(0) / (n_vecinos / factor)
+	aceleracion(1) = aceleracion(1) / (n_vecinos / factor)
+	aceleracion(2) = aceleracion(2) / (n_vecinos / factor)
 		
 	return
 	
@@ -165,9 +155,9 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 	integer idx_particula, j, n_vecinos, N	
 	integer lista_vecinos(0:n_vecinos-1)
 	real*8 presiones(0:N-1), pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), masas(0:N-1), densidades(0:N-1)
-	real*8 vector_gradiente(0:2), posicion1(0:2), posicion2(0:2), diferencia(0:2), unitario(0:2)
+	real*8 vector_gradiente(0:2), posicion1(0:2), posicion2(0:2), diferencia(0:2)
 	
-	real*8 magnitud_pos, soft_len, factor, diff_presion, gradiente
+	real*8 magnitud_pos, soft_len, radio1, radio2
 	
 	vector_gradiente = 0.0D+0
 
@@ -180,52 +170,27 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 		posicion2(0) = pos_x(lista_vecinos(j)) * PARSEC_MTS
 		posicion2(1) = pos_y(lista_vecinos(j)) * PARSEC_MTS
 		posicion2(2) = pos_z(lista_vecinos(j)) * PARSEC_MTS
-		
-		diferencia(0) = posicion1(0) - posicion2(0)
-		diferencia(1) = posicion1(1) - posicion2(1)
-		diferencia(2) = posicion1(2) - posicion2(2)
-
-		magnitud_pos = magnitudVector3D(diferencia)
-
-		unitario(0) = diferencia(0) / magnitud_pos
-		unitario(1) = diferencia(1) / magnitud_pos
-		unitario(2) = diferencia(2) / magnitud_pos
 				
-		!write(*,*) "En GradientePresion. Magnitud dif: ", magnitud_pos, " soft_len: ", soft_len, " - mayor: ", magnitud_pos >= soft_len
-
-!		if(idx_particula == 100) then
-!			write(*,*) "P1: ", presiones(idx_particula), " P2: ", presiones(lista_vecinos(j)), "P1 - P2: ", diff_presion, ". Unitario y posicion: ", unitario, diferencia, "mag diferencia: ", magnitud_pos, " Vector: ", vector_gradiente
-!		endif
+		diferencia = diferenciaVectores3D(posicion1, posicion2)
+		magnitud_pos = magnitudVector3D(diferencia)
 		
-		diff_presion = presiones(idx_particula) - presiones(lista_vecinos(j))
-
-		gradiente = (diff_presion / diferencia(0)) + (diff_presion / diferencia(1)) + (diff_presion / diferencia(2))
-
-		vector_gradiente(0) = vector_gradiente(0) + (gradiente * unitario(0))
-		vector_gradiente(1) = vector_gradiente(1) + (gradiente * unitario(1))
-		vector_gradiente(2) = vector_gradiente(2) + (gradiente * unitario(2))
-
-!		vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
-!		vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
-!		vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
-
-!		if(magnitud_pos >= soft_len) then
-!			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / magnitud_pos )
-!			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / magnitud_pos )
-!			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / magnitud_pos )
-!		else
-!			vector_gradiente(0) = vector_gradiente(0) + ( (diff_presion * unitario(0)) / soft_len )
-!			vector_gradiente(1) = vector_gradiente(1) + ( (diff_presion * unitario(1)) / soft_len )
-!			vector_gradiente(2) = vector_gradiente(2) + ( (diff_presion * unitario(2)) / soft_len )
-!		endif
+		!write(*,*) "En GradientePresion. Magnitud dif: ", magnitud_pos, " soft_len: ", soft_len, " - mayor: ", magnitud_pos >= soft_len
+		
+		if(magnitud_pos >= soft_len) then
+			vector_gradiente(0) = vector_gradiente(0) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(0)) / (magnitud_pos**2) )
+			vector_gradiente(1) = vector_gradiente(1) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(1)) / (magnitud_pos**2) )
+			vector_gradiente(2) = vector_gradiente(2) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(2)) / (magnitud_pos**2) )
+		else
+			vector_gradiente(0) = vector_gradiente(0) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(0)) / (soft_len**2) )
+			vector_gradiente(1) = vector_gradiente(1) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(1)) / (soft_len**2) )
+			vector_gradiente(2) = vector_gradiente(2) + ( ((presiones(idx_particula) - presiones(lista_vecinos(j))) * diferencia(2)) / (soft_len**2) )
+		endif
 		
 	enddo
 	
-!	factor = 0.05
-
-	vector_gradiente(0) = vector_gradiente(0) / (n_vecinos)
-	vector_gradiente(1) = vector_gradiente(1) / (n_vecinos)
-	vector_gradiente(2) = vector_gradiente(2) / (n_vecinos)
+	vector_gradiente(0) = vector_gradiente(0) / n_vecinos
+	vector_gradiente(1) = vector_gradiente(1) / n_vecinos
+	vector_gradiente(2) = vector_gradiente(2) / n_vecinos
 	
 	return
 end function
@@ -249,22 +214,21 @@ real*8 function PresionGasIdeal(densidad, temperatura)
 	
 	exponente = 1.0D+0
 	
-	if( (densidad / 1.0E-13) <= 0.25D+0) then
+	if( (densidad / 1.0E-15) <= 0.25D+0) then
 		exponente = 1.0D+0
 	else
 	
-
-		if( (densidad / 1.0E-13) > 0.25D+0 .and. (densidad / 1.0E-13) <= 5.0D+0) then
+		if( (densidad / 1.0E-15) > 0.25D+0 .and. (densidad / 1.0E-15) <= 5.0D+0) then
 			exponente = 1.1D+0
 		else
-			if( (densidad / 1.0E-13) .gt. 5.0D+0) then
-				exponente = 2.0D+0!4.0D+0 / 3.0D+0
+			if( (densidad / 1.0E-15) .gt. 5.0D+0) then
+				exponente = 4.0D+0 / 3.0D+0
 			endif
 		endif
 	
 	endif
 	
-	PresionGasIdeal = ((K_BOLTZMANN / (PESO_MOLECULAR_H * ATOMIC_MASS_CONSTANT)) * (temperatura**exponente) * ((densidad / 1000.0)))
+	PresionGasIdeal = ((K_BOLTZMANN / (PESO_MOLECULAR_H * ATOMIC_MASS_CONSTANT)) * temperatura * ((densidad / 1000.0)**exponente))
 
 	return
 
@@ -332,7 +296,7 @@ real*8 function calculaVelocidadAngular(Masa, Radio, beta)
 end function
 
 !----
-!Recibe aceleración en m/s^2, posiciones en metros
+!Recibe aceleraci�n en m/s^2, posiciones en metros
 !Devuelve w en rad/seg
 
 real*8 function velocidad_angular(acc_grav3D, vector_posicion3D, beta)
@@ -674,7 +638,7 @@ real*8 function aceleracion_g(radio, masa)
 
 end function
 
-!Calcula el vector de fuerza gravitacional sobre una partícula, ejercido por N particulas en un espacio 3D
+!Calcula el vector de fuerza gravitacional sobre una part�cula, ejercido por N particulas en un espacio 3D
 
 function calcularAceleracionGFB(p1, coordenadas_x, coordenadas_y, coordenadas_z, masas, N) result(fuerza_vect)
 	use Constantes
