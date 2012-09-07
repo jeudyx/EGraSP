@@ -18,7 +18,7 @@ function calcularAceleracion(p, Arbol, umbralBH, soft_len, N) result(acc_vect)
 	
 	real*8 umbralBH, soft_len
 		
-	integer j, i, N	
+	integer*4 j, i, N	
 	
 	type(Particula) p
 	

@@ -30,7 +30,7 @@ recursive function calcularAccGravBH(p, Arbol, umbral, soft_len) result(acc_vect
 
 	logical son_hermanos
 
-	integer i
+	integer*4 i
 
 	acc_vect(0) = 0.0D+0
 	acc_vect(1) = 0.0D+0

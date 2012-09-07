@@ -28,9 +28,9 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 	
 	implicit none
 
-	integer N, i, j, itr_inicio, itr_final, myid, n_vecinos, max_i
-	integer lista_vecinos(0:n_vecinos-1)
-	integer matriz_vecinos(0:N-1, 0:n_vecinos-1)
+	integer*4 N, i, j, itr_inicio, itr_final, myid, n_vecinos, max_i
+	integer*4 lista_vecinos(0:n_vecinos-1)
+	integer*4 matriz_vecinos(0:N-1, 0:n_vecinos-1)
 	real*8 presiones(0:N-1)
 	real*8 pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), acc_x(0:N-1), acc_y(0:N-1), acc_z(0:N-1), masas(0:N-1), densidades(0:N-1), densidades_locales(0:N-1), pos_predictor_x(0:N-1), pos_predictor_y(0:N-1), pos_predictor_z(0:N-1)
 	real*8 v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), velocidades_angulares(0:N-1)
@@ -188,11 +188,11 @@ SUBROUTINE calcularVecinos_Densidad_Presion(N, itr_inicio, itr_final, Arbol, Nod
 
 	real*8 pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), masas(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades_locales(0:N-1), presiones(0:N-1), distancias_vecinos(0:n_vecinos-1)
 	
-	integer N, i, itr_inicio, itr_final, n_vecinos, detectados, myid, j
+	integer*4 N, i, itr_inicio, itr_final, n_vecinos, detectados, myid, j
 
-	integer lista_vecinos(0:n_vecinos - 1)
+	integer*4 lista_vecinos(0:n_vecinos - 1)
 
-	integer matriz_vecinos(0:N-1,0:n_vecinos - 1)
+	integer*4 matriz_vecinos(0:N-1,0:n_vecinos - 1)
 
 	type(Particula) p
 

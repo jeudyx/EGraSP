@@ -19,12 +19,12 @@ program principal
 	
 	include 'mpif.h'
 
-	integer N, Ni, Nproc, i, itr_procs, j, k, i_proc, id_particula_colision, initial_i, save_at, errcode, myid, numprocs , tag, itr_inicio, itr_final, proc_i, n_vecinos, ii, iii
+	integer*4 N, Ni, Nproc, i, itr_procs, j, k, i_proc, id_particula_colision, initial_i, save_at, errcode, myid, numprocs , tag, itr_inicio, itr_final, proc_i, n_vecinos, ii, iii
 	
 	real*8 , allocatable, dimension(:) :: masas, pos_x, pos_y, pos_z, distancias, v_x, v_y, v_z, acc_x, acc_y, acc_z, densidades, densidades_locales, densidades_locales_proc, presiones, presiones_proc
 	real*8 , allocatable, dimension(:) :: masas_proc, pos_x_proc, pos_y_proc, pos_z_proc, distancias_proc, v_x_proc, v_y_proc, v_z_proc, acc_x_proc, acc_y_proc, acc_z_proc, densidades_proc
-	integer, allocatable, dimension(:,:) :: matriz_vecinos, matriz_vecinos_proc
-	integer ipar(0:1)
+	integer*4, allocatable, dimension(:,:) :: matriz_vecinos, matriz_vecinos_proc
+	integer*4 ipar(0:1)
 	real*8 dpar(0:1)
 	type(OctreeNode), POINTER :: Arbol
 	type(OctreeNode), POINTER ::  NodosParticulas(:)
@@ -41,10 +41,10 @@ program principal
 	
 	real*8 acc_vect(0:2), posicion_vect(0:2), vector_posicion(0:2)
 
-	integer status(MPI_STATUS_SIZE) 
+	integer*4 status(MPI_STATUS_SIZE) 
 
-	integer response(1)
-	integer ipunit
+	integer*4 response(1)
+	integer*4 ipunit
 	
 	namelist /simparam/ simtit,N,temperatura,umbralBH,initial_i,beta, n_vecinos,dt,j,save_at,soft_len,tolerancia_colision
 
@@ -85,17 +85,17 @@ program principal
 	endif
 
 	!Transmito los parámetros a los demás nodos
-	call MPI_BCAST(N,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
-	call MPI_BCAST(initial_i,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
-	call MPI_BCAST(j,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
-	call MPI_BCAST(save_at,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(N,1,MPI_integer,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(initial_i,1,MPI_integer,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(j,1,MPI_integer,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(save_at,1,MPI_integer,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(umbralBH,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(soft_len,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(dt,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(tolerancia_colision,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(beta,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
 	call MPI_BCAST(temperatura,1,MPI_DOUBLE_PRECISION,0,MPI_COMM_WORLD,errcode)
-	call MPI_BCAST(n_vecinos,1,MPI_INTEGER,0,MPI_COMM_WORLD,errcode)
+	call MPI_BCAST(n_vecinos,1,MPI_integer,0,MPI_COMM_WORLD,errcode)
 
 	Ni = N / numprocs
 
@@ -228,13 +228,13 @@ program principal
 	if(myid == 0) then
 		tag = MPI_ANY_TAG
 		do i = 1, numprocs - 1, 1
-			call MPI_RECV(response, 1, MPI_INTEGER, i, tag, MPI_COMM_WORLD, status, errcode)
+			call MPI_RECV(response, 1, MPI_integer, i, tag, MPI_COMM_WORLD, status, errcode)
 		enddo
 		!write(*,*) "Recibidos todos los mensajes de hijos..."
 	else
 		response(1) = 0
 		tag = 0
-		call MPI_SSEND(response, 1, MPI_INTEGER, 0, tag, MPI_COMM_WORLD, errcode)
+		call MPI_SSEND(response, 1, MPI_integer, 0, tag, MPI_COMM_WORLD, errcode)
 	endif
 
 	!En este punto, todos los hijos tienen los datos
@@ -283,8 +283,8 @@ program principal
 		
 		!!write(*,*) myid, " - Estoy luego de llamada a calcularVecinos_Densidad_Presion. itr_final = ", itr_final, " - vecinos: ", matriz_vecinos(itr_final, 0:n_vecinos-1)
 		
-		presiones_proc = presiones(itr_inicio:itr_final)
-		densidades_locales_proc = densidades_locales(itr_inicio:itr_final)
+		presiones_proc(:) = presiones(itr_inicio:itr_final)
+		densidades_locales_proc(:) = densidades_locales(itr_inicio:itr_final)
 
 		!write(*,*) myid, " Calculadas presiones, densidades y vecinos. Rango: ",  itr_inicio, itr_final, " Presiones: ", presiones_proc
 
@@ -416,7 +416,7 @@ program principal
 		else
 			response(1) = 0
 			tag = 0
-			!call MPI_SSEND(response, 1, MPI_INTEGER, 0, tag, MPI_COMM_WORLD, errcode)
+			!call MPI_SSEND(response, 1, MPI_integer, 0, tag, MPI_COMM_WORLD, errcode)
 						
 			masas_proc(0:Nproc-1) = masas(itr_inicio:itr_final)
 			pos_x_proc(0:Nproc-1) = pos_x(itr_inicio:itr_final)
@@ -500,12 +500,12 @@ program principal
 	if(myid == 0) then
 		tag = MPI_ANY_TAG
 		do i = 1, numprocs - 1, 1
-			call MPI_RECV(response, 1, MPI_INTEGER, i, tag, MPI_COMM_WORLD, status, errcode)
+			call MPI_RECV(response, 1, MPI_integer, i, tag, MPI_COMM_WORLD, status, errcode)
 		enddo
 	else
 		response(1) = 0
 		tag = 0
-		call MPI_SSEND(response, 1, MPI_INTEGER, 0, tag, MPI_COMM_WORLD, errcode)
+		call MPI_SSEND(response, 1, MPI_integer, 0, tag, MPI_COMM_WORLD, errcode)
 	endif	
 	
 	call MPI_FINALIZE (errcode)

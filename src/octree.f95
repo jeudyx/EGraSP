@@ -7,7 +7,7 @@ RECURSIVE SUBROUTINE limpiarArbol(Arbol)
 	
 	implicit none
 
-	integer i
+	integer*4 i
 		
 	type(OctreeNode), POINTER :: Arbol, Hijo
 	
@@ -57,7 +57,7 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 	
 	implicit none
 
-	integer N, i, NNodos, k
+	integer*4 N, i, NNodos, k
 	
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), densidades(0:N-1)
 
@@ -109,7 +109,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 	use Fisica
 	implicit none
 
-	integer NNodos, j,  N, id_padre
+	integer*4 NNodos, j,  N, id_padre
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1)
 	real*8 tmp_centromasas(0:2)
 	type(OctreeNode), TARGET ::  Arbol
@@ -587,8 +587,8 @@ RECURSIVE SUBROUTINE ExpandirNodo(Nodo, NodoAExplorar, N, detectados, n_vecinos,
 	
 	implicit none
 
-	integer N, n_vecinos, detectados, i, j
-	integer lista_vecinos(0:n_vecinos-1)
+	integer*4 N, n_vecinos, detectados, i, j
+	integer*4 lista_vecinos(0:n_vecinos-1)
 	real*8 distancias_vecinos(0:n_vecinos-1)
 	type(OctreeNode) Nodo, NodoAExplorar
 	type(OctreeNode), POINTER :: dummy
@@ -629,8 +629,8 @@ SUBROUTINE RevisarReemplazar(Nodo, NodoAnalizado ,n_vecinos, lista_vecinos, dist
 	
 	implicit none
 
-	integer n_vecinos, i, j, max_idx
-	integer lista_vecinos(0:n_vecinos-1)
+	integer*4 n_vecinos, i, j, max_idx
+	integer*4 lista_vecinos(0:n_vecinos-1)
 	real*8 distancias_vecinos(0:n_vecinos - 1)
 	real*8 distancia_max, distancia_nodo
 	type(OctreeNode) Nodo, NodoAnalizado
@@ -661,15 +661,15 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	
 	implicit none
 	
-	integer N, n_vecinos, detectados, i, j, nivel_actual, nivel_maximo, myid
+	integer*4 N, n_vecinos, detectados, i, j, nivel_actual, nivel_maximo, myid
 	
 	logical caso_especial
 
 	type(OctreeNode) NodosParticulas(0:N-1)
 	
-	integer lista_vecinos(0:n_vecinos-1)
+	integer*4 lista_vecinos(0:n_vecinos-1)
 	
-	integer indices_vecinos(0:n_vecinos - 1)
+	integer*4 indices_vecinos(0:n_vecinos - 1)
 
 	real*8 distancias_vecinos(0:n_vecinos - 1)
 		
@@ -978,7 +978,7 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	
 	implicit none
 
-	integer posicion_hijo
+	integer*4 posicion_hijo
 	
 	type(OctreeNode) Nodo, Padre
 
@@ -1147,10 +1147,10 @@ RECURSIVE SUBROUTINE VecinosFuerzaBruta(NodosParticulas, IdNodo, N, n_vecinos, l
 	implicit none
 
 	type(OctreeNode) NodosParticulas(0:N-1)
-	integer lista_vecinos(n_vecinos-1)
+	integer*4 lista_vecinos(n_vecinos-1)
 	real*8 distancias(0:N-1)
-	integer i, N, n_vecinos, IdNodo
-	integer indices_vecinos(0:N-1)
+	integer*4 i, N, n_vecinos, IdNodo
+	integer*4 indices_vecinos(0:N-1)
 	
 	do i = 0, N - 1, 1
 		indices_vecinos(i) = i
@@ -1177,7 +1177,7 @@ RECURSIVE SUBROUTINE ResetearVisitados(Arbol)
 	
 	implicit none
 
-	integer i
+	integer*4 i
 		
 	type(OctreeNode) Arbol
 

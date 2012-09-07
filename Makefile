@@ -1,6 +1,6 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-1000 -O3
+FCFLAGS = -ffree-line-length-1000 -m64 -O3
 
 PROGRAMS = egrasp generar_nube
 

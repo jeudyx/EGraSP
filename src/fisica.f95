@@ -38,8 +38,8 @@ function ArtificialViscosityAcc(idx_particula, temperatura, soft_len, n_vecinos,
 	
 	implicit none
 	
-	integer idx_particula, n_vecinos, N, j
-	integer lista_vecinos(0:n_vecinos-1)		
+	integer*4 idx_particula, n_vecinos, N, j
+	integer*4 lista_vecinos(0:n_vecinos-1)		
 	real*8 pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades_locales(0:N-1), masas(0:N-1), densidades(0:N-1)
 	real*8 r1(0:2), r2(0:2), v1(0:2), v2(0:2), aceleracion(0:2), aceleracion_tmp(0:2), r12(0:2)
 	real*8 resultado, total, densidad_local1, densidad_local2, densidad_local_promedio, temperatura, soft_len, radio1, radio2, mag_r12, factor
@@ -152,8 +152,8 @@ function GradientePresion(idx_particula, n_vecinos, lista_vecinos, presiones, N,
 	
 	implicit none
 	
-	integer idx_particula, j, n_vecinos, N	
-	integer lista_vecinos(0:n_vecinos-1)
+	integer*4 idx_particula, j, n_vecinos, N	
+	integer*4 lista_vecinos(0:n_vecinos-1)
 	real*8 presiones(0:N-1), pos_x(0:N-1), pos_y(0:N-1), pos_z(0:N-1), masas(0:N-1), densidades(0:N-1)
 	real*8 vector_gradiente(0:2), posicion1(0:2), posicion2(0:2), diferencia(0:2)
 	
@@ -335,7 +335,7 @@ function vector_velocidad_angular(vector_posicion3D, w) result(vector_velocidad)
 	
 	implicit none
 
-	integer i, N
+	integer*4 i, N
 	
 	real*8 radio_xy, circunferencia, seccion, w
 	real*8 vector_posicion2D(0:1), vector_posicion3D(0:2), vector_w(0:2), vector_velocidad(0:2)
@@ -369,7 +369,7 @@ function momento_angular_total(masas, pos_x, pos_y, pos_z, v_x, v_y, v_z, N) res
 	
 	implicit none
 
-	integer i, N
+	integer*4 i, N
 	
 	real*8 vector_posicion3D(0:2), vector_velocidad3D(0:2) 
 	real*8 Lvect(0:2), Li(0:2)
@@ -409,7 +409,7 @@ function vector_momento_angular(vector_posicion3D, vector_velocidad3D, masa) res
 	
 	implicit none
 
-	integer i, N
+	integer*4 i, N
 	
 	real*8 vector_posicion3D(0:2), vector_velocidad3D(0:2), L(0:2)
 	real*8 masa	
@@ -508,9 +508,9 @@ real*8 function calcularDensidadLocal(N, id_particula, lista_vecinos, n_vecinos,
 	use Constantes
 	implicit none
 
-	integer N, id_particula, n_vecinos, i, j
+	integer*4 N, id_particula, n_vecinos, i, j
 	
-	integer lista_vecinos(0:n_vecinos-1)
+	integer*4 lista_vecinos(0:n_vecinos-1)
 	
 	real*8 radio, volumen, masa_total, volumen_total, max_x, max_y, max_z, min_x, min_y, min_z, resultado, lado1, lado2, lado3
 	
@@ -564,7 +564,7 @@ function centroMasa(m1, x1, y1, z1, m2, x2, y2, z2) result(cm)
 	use Tipos
 	implicit none
 
-	integer i, N
+	integer*4 i, N
 	
 	real*8 m1, x1, y1, z1, m2, x2, y2, z2
 	
@@ -649,7 +649,7 @@ function calcularAceleracionGFB(p1, coordenadas_x, coordenadas_y, coordenadas_z,
 	
 	implicit none
 
-	integer i, N
+	integer*4 i, N
 	real*8 coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), masas(0:N-1)
 	real*8 distancia, fuerza_esc, fuerza12_esc, macum, fuerza_ant_esc, conv_prom, acum_log
 	real*8 fuerza_vect(0:2), fuerza12_vect(0:2)

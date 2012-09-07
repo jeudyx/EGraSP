@@ -9,10 +9,10 @@ MODULE Auxiliar
 recursive function ordenar(arreglo, indices, N) result(resultado)
 	implicit none
 		
-	integer N, N1, N2
+	integer*4 N, N1, N2
 	
 	real*8 arreglo(0:N-1), resultado(0:N-1)
-	integer indices(0:N-1), resp_indices(0:N-1)
+	integer*4 indices(0:N-1), resp_indices(0:N-1)
 
 	resp_indices = 0.0D+0
 	
@@ -52,10 +52,10 @@ function appendArrayOrdenado(arr1, arr2, N1, N2, idx1, idx2, indices) result(res
 	implicit none
 
 	real*8 arr1(0:N1-1), arr2(0:N2-1) 
-	integer idx1(0:N1-1), idx2(0:N2-1), indices(0:(N1+N2-1))
+	integer*4 idx1(0:N1-1), idx2(0:N2-1), indices(0:(N1+N2-1))
 	real*8 resultado(0:(N1+N2-1))
 	
-	integer i, j, N1, N2, N, ptr1, ptr2
+	integer*4 i, j, N1, N2, N, ptr1, ptr2
 	
 	logical seguir
 	
@@ -109,7 +109,7 @@ function appendArrayReal(arr1, arr2, N1, N2) result(resultado)
 	
 	real*8 resultado(0:(N1+N2-1))
 	
-	integer i, j, N1, N2
+	integer*4 i, j, N1, N2
 		
 	do i = 0, N1 - 1, 1
 		resultado(i) = arr1(i)
@@ -127,11 +127,11 @@ function appendArrayInt(arr1, arr2, N1, N2) result(resultado)
 
 	implicit none
 
-	integer arr1(0:N1-1), arr2(0:N2-1)
+	integer*4 arr1(0:N1-1), arr2(0:N2-1)
 	
-	integer resultado(0:(N1+N2-1))
+	integer*4 resultado(0:(N1+N2-1))
 	
-	integer i, j, N1, N2
+	integer*4 i, j, N1, N2
 		
 	do i = 0, N1 - 1, 1
 		resultado(i) = arr1(i)
@@ -155,7 +155,7 @@ function appendArrayOctree(arr1, arr2, N1, N2) result(resultado)
 	
 	type(OctreeNode) resultado(0:(N1+N2-1))
 	
-	integer i, j, N1, N2
+	integer*4 i, j, N1, N2
 		
 	do i = 0, N1 - 1, 1
 		resultado(i) = arr1(i)
@@ -184,7 +184,7 @@ end function
 real*8 function valorMaximoIdx(arreglo, N, indice_mayor)
 	implicit none
 	
-	integer N, indice_mayor, i
+	integer*4 N, indice_mayor, i
 	real*8 tmp_max
 	real*8 arreglo(0: N - 1)
 
@@ -207,7 +207,7 @@ end function
 real*8 function valorMinimoIdx(arreglo, N, indice_menor)
 	implicit none
 	
-	integer N, indice_menor, i
+	integer*4 N, indice_menor, i
 	real*8 tmp_min
 	real*8 arreglo(0: N - 1)
 

@@ -14,30 +14,30 @@ module Tipos
 		double precision :: Radio_Nube 
 		double precision :: tff 
 		double precision :: masaJeansH210K
-		integer :: N_neighbour
-		integer :: save_every
+		integer*4 :: N_neighbour
+		integer*4 :: save_every
 	end type SimParameters
 		
 	type Particula	
 		real*8 posicion(0:2)
 		real*8 velocidad(0:2)			
-		integer :: id
+		integer*4 :: id
 		real*8 :: masa
 		real*8 :: densidad
 	end type Particula
 	
 	type Capa
-		integer :: id 		
+		integer*4 :: id 		
 		real*8 :: masa
 		real*8 :: radio		
-		integer :: num_particulas
+		integer*4 :: num_particulas
 	end type Capa
 	
 	type OctreeNode
-		integer id
-		integer id_particula
-		integer n_particulas
-		integer nivel
+		integer*4 id
+		integer*4 id_particula
+		integer*4 n_particulas
+		integer*4 nivel
 		logical hoja
 		logical hijos_creados
 		logical visitado

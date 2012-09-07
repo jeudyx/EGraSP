@@ -14,7 +14,7 @@ subroutine guardarNube(unidad, path, N, masas, coordenadas_x, coordenadas_y, coo
 
 	implicit none
 	
-	integer N, i, unidad
+	integer*4 N, i, unidad
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	real*8 radio
 	real*8 vector_posicion(0:2)
@@ -28,7 +28,7 @@ SUBROUTINE CargarNube(path, masas, coordenadas_x, coordenadas_y, coordenadas_z, 
 
 	implicit none
 
-	integer N, i
+	integer*4 N, i
 	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	character(len=256) :: path
 
@@ -45,7 +45,7 @@ subroutine guardarNubeCSV(unidad, path, N, masas, coordenadas_x, coordenadas_y, 
 	
 	implicit none
 	
-	integer N, i, unidad
+	integer*4 N, i, unidad
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	real*8 radio
 	real*8 vector_posicion(0:2)
@@ -78,7 +78,7 @@ SUBROUTINE CargarNubeCSV(path, masas, coordenadas_x, coordenadas_y, coordenadas_
 	
 	implicit none
 
-	integer N, i
+	integer*4 N, i
 	real*8 distancias(0:N-1), masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1), v_x(0:N-1), v_y(0:N-1), v_z(0:N-1), densidades(0:N-1)
 	character(len=100) :: path
 
