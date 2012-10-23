@@ -1,7 +1,66 @@
 MODULE Octree
 	CONTAINS
 
+RECURSIVE SUBROUTINE imprimirArbol(Arbol)
+
+	use Tipos
+	
+	implicit none
+
+	integer*4 i
+		
+	type(OctreeNode), POINTER :: Arbol, Hijo
+
+	write(*,*) "Nodo: ", Arbol%id
+	write(*,*) "----"
+
+	if(.not. Arbol%hoja .and. Arbol%hijos_creados) then
+		do i = 0, 7, 1
+			Hijo => DarHijo(Arbol, i)
+			write(*,*) "Hijo: ", Hijo%id, Hijo%hoja, Hijo%hijos_creados
+		enddo
+		write(*,*) "--------"
+		write(*,*) "--------"	
+		do i = 0, 7, 1
+			Hijo => DarHijo(Arbol, i)
+			call imprimirArbol(Hijo)
+		enddo
+	endif
+	
+END SUBROUTINE
+
+
 RECURSIVE SUBROUTINE limpiarArbol(Arbol)
+
+	use Tipos
+	
+	implicit none
+
+	integer*4 i
+		
+	type(OctreeNode), POINTER :: Arbol, Hijo
+
+	write(*,*) "Limpiado nodo: ", Arbol%id
+
+	if(.not. Arbol%hoja .and. Arbol%hijos_creados) then
+		do i = 0, 7, 1
+			Hijo => DarHijo(Arbol, i)
+			call limpiarArbol(Hijo)
+		enddo
+	endif
+	
+	write(*,*) "Deallocating nodo: ", Arbol%id
+	
+	write(*,*) "--------"
+	write(*,*) "--------"	
+
+	deallocate(Arbol)
+!	Arbol => NULL()
+
+END SUBROUTINE
+
+
+RECURSIVE SUBROUTINE xlimpiarArbol(Arbol)
 
 	use Tipos
 	
@@ -27,7 +86,7 @@ RECURSIVE SUBROUTINE limpiarArbol(Arbol)
 		
 	if(Arbol%hijos_creados) then	
 		do i = 0, 7, 1
-			Hijo => Arbol%hijos(i)
+			Hijo => DarHijo(Arbol, i)
 			Hijo%id = 0
 			Hijo%id_particula = -1
 			Hijo%n_particulas = 0
@@ -63,13 +122,13 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 
 	type(OctreeNode) NodosParticulas(0:N-1)
 
-	type(OctreeNode), POINTER :: Arbol			!Cabeza del arbol
+	type(OctreeNode), POINTER :: Arbol	!Cabeza del arbol
 	type(Particula) p
 	
 	type(Cubo) cube
 
 	real*8 posicion(0:2)
-			
+		
 	!Teniendo el árbol en memoria, inserto partícula a partícula según el algoritmo descrito en http://arborjs.org/docs/barnes-hut
 		
 	!Cubo que contiene la nube entera	
@@ -86,21 +145,21 @@ SUBROUTINE CrearOctree(masas, coordenadas_x, coordenadas_y, coordenadas_z, densi
 	Arbol%nivel = 0
 	
 	!Inserta las partículas una a una
-	do i = 0, N - 1, 1		
+	do i = 0, N - 1, 1
+	
 		!Es un esquema top-down, cada particula la intentará insertar siempre desde la raíz		
 		
 		if(masas(i) > 0.0D+0) then
 			!Solo inserto particulas existentes, no eliminadas
 			p = construirParticula(i, masas(i), coordenadas_x(i), coordenadas_y(i), coordenadas_z(i), 0.0D+0, 0.0D+0, 0.0D+0, densidades(i))
-	!		write(*,*) "Insertando particula: ", i, " a arbol. NNodos = ", NNodos
+			!write(*,*) "Insertando particula: ", i, " a arbol. NNodos = ", NNodos
 			call InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
 		endif
 	enddo
 
-
 END SUBROUTINE
 
-!Inserta una particula en el arbol. "i" es la posicion del nodo dentro del árbol donde se intentará meter la partícula
+!Inserta una par	ticula en el arbol. "i" es la posicion del nodo dentro del árbol donde se intentará meter la partícula
 !k es un apuntador de los nodos usados hasta el momento. Apunta al siguiente nodo disponible para ser usado en el arbol
 
 RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
@@ -112,6 +171,10 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 	integer*4 NNodos, j,  N, id_padre
 	real*8 masas(0:N-1), coordenadas_x(0:N-1), coordenadas_y(0:N-1), coordenadas_z(0:N-1)
 	real*8 tmp_centromasas(0:2)
+	
+
+	type(OctreeNode), POINTER ::  Hijo
+
 	type(OctreeNode), TARGET ::  Arbol
 	type(Particula) p, q
 	type(Cubo) hijos_nuevos(0:7)
@@ -173,11 +236,12 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			do j = 0, 7, 1
 				!Busco cual hijo contiene la particula
 				!obtengo el cubo que corresponde a cada hijo
-				tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
+				Hijo => DarHijo(Arbol, i)
+				tmp_cube = CrearCubo(Hijo%radio, Hijo%centroide)
 				!Si el cubo hijo contiene a la particula existente
 				if(CuboContienePunto(tmp_cube, p%posicion)) then				
 !					write(*,*) "Nodo interno. Particula a insertar ubicada en hijo: ", j, " de nodo ", Arbol%id, Arbol%id_particula, Arbol%hoja, " id de hijo: ", Arbol%hijos(j)%id
-					call InsertarParticula(p, Arbol%hijos(j), NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
+					call InsertarParticula(p, Hijo, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
 					return
 				endif				
 			enddo						
@@ -198,13 +262,6 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 				write(*,*) "Cubo dado como argumento"
 				call imprimirCubo(cube)
 				write(*,*) "---------------------------------"
-				!write(*,*) "Imprimo cubos hijos"
-				!do j = 0, 7, 1
-				!	write(*,*) "Info de hijo: ", Arbol%hijos(j)%id, Arbol%hijos(j)%id_particula, Arbol%hijos(j)%n_particulas
-				!	tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
-				!	call imprimirCubo(tmp_cube)
-				!	write(*,*) "---------------------------------"
-				!enddo						
 
 				j = 0
 				!mato al programa para analizar
@@ -239,14 +296,21 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		
 		!Creo espacio para los hijos si no existia ya
 		if(.not. Arbol%hijos_creados) then
-			allocate (Arbol%hijos(0:7))
+			allocate (Arbol%hijo0)
+			allocate (Arbol%hijo1)
+			allocate (Arbol%hijo2)
+			allocate (Arbol%hijo3)
+			allocate (Arbol%hijo4)
+			allocate (Arbol%hijo5)
+			allocate (Arbol%hijo6)
+			allocate (Arbol%hijo7)
+			Arbol%hijos_creados = .true.
 		endif
 						
 		!Inicializo/Reseteo los hijos
 		
 		Arbol%hoja = .false.
-		
-		
+				
 		do j = 0, 7, 1
 			Arbol%hijos(j)%id = NNodos
 			Arbol%hijos(j)%id_particula = -1
@@ -681,17 +745,7 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	
 	caso_especial = .true.
 
-!	if(Nodo%id_particula == 343) then
-!		write(*,*) "Entra en busqueda de vecinos... 343", " ID, nivel de Nodo y Arbol: ", Nodo%id, Nodo%nivel, Arbol%id, Arbol%nivel, " Visitado arbol: ", Arbol%visitado
-!	endif
-	
-	if(Arbol%visitado .or. nivel_actual >= nivel_maximo) then
-	
-		!if(Nodo%id_particula == 343) then
-		!	write(*,*) Arbol%id, " <- ID - Sale de busqueda de vecinos... visitado: ", Arbol%visitado, " Niveles: ", nivel_actual, nivel_maximo
-		!endif	
-	
-!!		write(*,*) "Nodo visitado, sale: ", Arbol%id
+	if(Arbol%visitado .or. nivel_actual >= nivel_maximo) then	
 		return
 	endif
 	
@@ -964,8 +1018,8 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 		
 		!Llamada al padre, no incrementa nivel actual en caso especial de que todos los vecinos y hermanos sean hojas
 		
-		!if( (caso_especial .or. detectados < n_vecinos) .and. Arbol%id > 0) then
-		if(caso_especial .or. detectados < n_vecinos) then
+		if( (caso_especial .or. detectados < n_vecinos) .and. Arbol%id > 0) then
+		!if(caso_especial .or. detectados < n_vecinos) then
 			call Vecinos(Nodo, NodosParticulas, Arbol%padre, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos, nivel_actual, nivel_maximo, myid)
 		endif
 	endif
@@ -1208,5 +1262,44 @@ subroutine imprimirCubo(cube)
 	write(*,*) cube%vertice8(0), ",", cube%vertice8(1), ",", cube%vertice8(2)
 	
 end subroutine 
+
+function DarHijo(Arbol, N) result(hijo)
+	
+	use Tipos
+	
+	implicit none
+	
+	type(OctreeNode), POINTER :: Arbol, hijo
+	
+	SELECT CASE (N)
+	   
+	   CASE (0)	   	
+		hijo => Arbol%hijo0
+
+	   CASE (1)	   	
+		hijo => Arbol%hijo1
+
+	   CASE (2)
+		hijo => Arbol%hijo2
+
+	   CASE (3)	   	
+		hijo => Arbol%hijo3
+
+	   CASE (4)	   	
+		hijo => Arbol%hijo4
+
+	   CASE (5)	   	
+		hijo => Arbol%hijo5
+
+	   CASE (6)	   	
+		hijo => Arbol%hijo6
+
+	   CASE (7)	   	
+		hijo => Arbol%hijo7
+	
+	return
+	
+end function 
+
 
 END MODULE Octree

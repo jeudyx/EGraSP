@@ -81,7 +81,26 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 	!En cada caso se debe reconstruir el arbol
 	!uso las nuevas posiciones. Esta correccion se hace el 10/08 por error de particula escapando
 
+	!write(*,*) ">>>>>>>>>>>>>>>>Limpiando arbol<<<<<<<<<<<<<<<<<"
+
 	call limpiarArbol(Arbol)
+	ALLOCATE(Arbol)
+	
+	!write(*,*) ">>>>>>>>>>>>>>>>Arbol limpio<<<<<<<<<<<<<<<<<<<<<"
+
+	Arbol%id = 0
+	Arbol%id_particula = -1
+	Arbol%hijos_creados = .false.
+	Arbol%n_particulas = 0
+	Arbol%hoja = .true.
+	Arbol%visitado = .false.
+	Arbol%centroide(0) = 0.0D+0
+	Arbol%centroide(1) = 0.0D+0
+	Arbol%centroide(2) = 0.0D+0
+	Arbol%centro_masa(0) = 0.0D+0
+	Arbol%centro_masa(1) = 0.0D+0
+	Arbol%centro_masa(2) = 0.0D+0
+
 	Arbol%radio = dist_max	
 	!write(*,*) myid, "-Maxima distancia: ", dist_max, " en particula: ", max_i, "posiciones: ", pos_predictor_x(max_i), pos_predictor_y(max_i), pos_predictor_z(max_i), "Velocidad: ", v_x(max_i), v_y(max_i), v_z(max_i)
 	call CrearOctree(masas, pos_predictor_x, pos_predictor_y, pos_predictor_z, densidades, N, Arbol, NodosParticulas)
@@ -210,7 +229,7 @@ SUBROUTINE calcularVecinos_Densidad_Presion(N, itr_inicio, itr_final, Arbol, Nod
 		do j = 0, N - 1, 1
 			NodosParticulas(j)%visitado = .false.
 		enddo
-				
+	
 		call Vecinos(NodosParticulas(i), NodosParticulas, NodosParticulas(i), N, detectados, n_vecinos, lista_vecinos, distancias_vecinos, 0, NIVEL_MAX_VECINOS, myid)
 		matriz_vecinos(i, 0:n_vecinos-1) = lista_vecinos
 

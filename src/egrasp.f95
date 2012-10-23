@@ -134,7 +134,7 @@ program principal
 	ALLOCATE(NodosParticulas(0:N-1))
 
 	!Inicializo la raiz octree
-	ALLOCATE(Arbol)
+!	ALLOCATE(Arbol)
 
 	
 
@@ -163,12 +163,13 @@ program principal
 		
 		dist_max = maxval(distancias)		
 
-		print *, "Nube cargada desde"
+		ALLOCATE(Arbol)
 
 		Arbol%id = 0
 		Arbol%id_particula = -1
 		Arbol%hijos_creados = .false.
 		Arbol%n_particulas = 0
+		Arbol%visitado = .false.
 		Arbol%hoja = .true.
 		Arbol%centroide(0) = 0.0D+0
 		Arbol%centroide(1) = 0.0D+0
@@ -243,11 +244,14 @@ program principal
 
 	if(.not. myid == 0) then
 
+		ALLOCATE(Arbol)
+
 		Arbol%id = 0
 		Arbol%id_particula = -1
 		Arbol%hijos_creados = .false.
 		Arbol%n_particulas = 0
 		Arbol%hoja = .true.
+		Arbol%visitado = .false.
 		Arbol%centroide(0) = 0.0D+0
 		Arbol%centroide(1) = 0.0D+0
 		Arbol%centroide(2) = 0.0D+0
@@ -255,7 +259,7 @@ program principal
 		Arbol%centro_masa(1) = 0.0D+0
 		Arbol%centro_masa(2) = 0.0D+0
 		Arbol%radio = maxval(distancias)
-
+		
 		call CrearOctree(masas, pos_x, pos_y, pos_z, densidades, N, Arbol, NodosParticulas)		
 
 		!write(*,*) "Octree creado 1era vez (hijo : ", myid, ")"
@@ -365,7 +369,6 @@ program principal
 			Nproc = Nproc + (N - (numprocs * Ni))
 		endif		
 		
-		!write(*,*) myid, "----------LLAMO A pasoLeapFrog---------- i :", i
 		call pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas, pos_x, pos_y, pos_z, densidades, densidades_locales, v_x, v_y, v_z, acc_x, acc_y, acc_z, dt, umbralBH, tolerancia_colision, beta, n_vecinos, matriz_vecinos, presiones, soft_len, temperatura, myid)
 
 		if(myid == 0) then

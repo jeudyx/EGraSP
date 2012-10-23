@@ -1,15 +1,14 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-1000 -m64 -O3
+FCFLAGS = -ffree-line-length-1000 -m64 -g
 
-PROGRAMS = egrasp generar_nube
+PROGRAMS = prueba_mem egrasp generar_nube
 
 all: $(PROGRAMS)
 	
-prueba: almacenamiento.mod fuerzas.mod fisica.mod octree.mod constantes.mod funciones.mod
-	$(FC) ./src/prueba.f95 $(FCFLAGS)  -o pruebas *.o
-	rm *.mod *.o
-
+prueba_mem: almacenamiento.mod fuerzas.mod fisica.mod octree.mod constantes.mod funciones.mod
+	$(FC) ./src/prueba_mem.f95 $(FCFLAGS)  -o prueba_mem *.o
+	
 egrasp: almacenamiento.mod fuerzas.mod fisica.mod dinamica.mod octree.mod tipos.mod vectores.mod auxiliar.mod constantes.mod funciones.mod 
 	$(FC) ./src/egrasp.f95 $(FCFLAGS)  -o egrasp *.o
 	

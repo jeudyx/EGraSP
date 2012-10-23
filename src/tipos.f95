@@ -41,7 +41,10 @@ module Tipos
 		logical hoja
 		logical hijos_creados
 		logical visitado
-		type(OctreeNode), POINTER :: hijos(:)
+!		type(OctreeNode), POINTER :: hijos(:)
+
+		type(OctreeNode), POINTER :: hijo0, hijo1, hijo2, hijo3, hijo4, hijo5, hijo6, hijo7
+
 		type(OctreeNode), POINTER :: padre
 		real*8 centroide(0:2)
 		real*8 centro_masa(0:2)
