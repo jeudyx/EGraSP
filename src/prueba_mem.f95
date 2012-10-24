@@ -68,51 +68,74 @@ program principal
 	Arbol%centro_masa(2) = 0.0D+0
 	Arbol%radio = maxdist
 
-	ALLOCATE(Dummy)
+!	ALLOCATE(Dummy)
 
-	allocate (Dummy%hijo0)
-	allocate (Dummy%hijo1)
-	allocate (Dummy%hijo2)
-	allocate (Dummy%hijo3)
-	allocate (Dummy%hijo4)
-	allocate (Dummy%hijo5)
-	allocate (Dummy%hijo6)
-	allocate (Dummy%hijo7)
-	Dummy%hijos_creados = .true.
+!	allocate (Dummy%hijo0)
+!	allocate (Dummy%hijo1)
+!	allocate (Dummy%hijo2)
+!	allocate (Dummy%hijo3)
+!	allocate (Dummy%hijo4)
+!	allocate (Dummy%hijo5)
+!	allocate (Dummy%hijo6)
+!	allocate (Dummy%hijo7)
+!	Dummy%hijos_creados = .true.
 
 	write(*,*) "Allocated"
 
-	Hijo => DarHijo(Arbol, 1)
-	write(*,*) "Hijo cero: ", Hijo%id	
-	deallocate(Hijo) 
+!	Hijo => DarHijo(Arbol, 1)
+!	write(*,*) "Hijo cero: ", Hijo%id
 
+!	deallocate(Dummy%hijo0)
+!	deallocate(Dummy%hijo1)
+!	deallocate(Dummy%hijo2)
+!	deallocate(Dummy%hijo3)
+!	deallocate(Dummy%hijo4)
+!	deallocate(Dummy%hijo5)
+!	deallocate(Dummy%hijo6)
+!	deallocate(Dummy%hijo7)
+
+!	nullify(Hijo) 
 
 !	do i = 0, 7, 1
 !		Hijo => Dummy%hijos(i)
 !		deallocate(Hijo) 
 !	enddo	
 
-	deallocate(Dummy)	
+!	deallocate(Dummy)	
 	
-	write(*,*) "Dellocated"
+!	write(*,*) "Dellocated"
 
-	stop	
+!	stop	
 
 	call CrearOctree(masas, pos_x, pos_y, pos_z, densidades, N, Arbol, NodosParticulas)
 
 	write(*,*) 'Arbol creado'
-	
+		
 	call imprimirArbol(Arbol)
-		write(*,*) "--------"
-		write(*,*) "--------"	
-		write(*,*) "--------"
-		write(*,*) "--------"	
-		write(*,*) "--------"
-		write(*,*) "--------"	
+
+	write(*,*) "--------"
+	write(*,*) "--------"	
+	write(*,*) "--------"
+	write(*,*) "--------"	
+	write(*,*) "--------"
+	write(*,*) "--------"	
 
 	call limpiarArbol(Arbol)
 
 	write(*,*) 'Memoria limpia'
+
+	deallocate(NodosParticulas)
+	DEALLOCATE(masas)
+	DEALLOCATE(pos_x)
+	DEALLOCATE(pos_y)
+	DEALLOCATE(pos_z)
+	DEALLOCATE(v_x)
+	DEALLOCATE(v_y)
+	DEALLOCATE(v_z)
+	DEALLOCATE(distancias)
+	DEALLOCATE(densidades)
+
+
 
 	stop
 end

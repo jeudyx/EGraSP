@@ -40,19 +40,20 @@ RECURSIVE SUBROUTINE limpiarArbol(Arbol)
 		
 	type(OctreeNode), POINTER :: Arbol, Hijo
 
-	write(*,*) "Limpiado nodo: ", Arbol%id
+!	write(*,*) "Limpiado nodo: ", Arbol%id
 
 	if(.not. Arbol%hoja .and. Arbol%hijos_creados) then
+
 		do i = 0, 7, 1
 			Hijo => DarHijo(Arbol, i)
 			call limpiarArbol(Hijo)
 		enddo
 	endif
 	
-	write(*,*) "Deallocating nodo: ", Arbol%id
+!	write(*,*) "Deallocating nodo: ", Arbol%id
 	
-	write(*,*) "--------"
-	write(*,*) "--------"	
+!	write(*,*) "--------"
+!	write(*,*) "--------"	
 
 	deallocate(Arbol)
 !	Arbol => NULL()
