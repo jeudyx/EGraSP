@@ -70,19 +70,19 @@ program principal
 
 	ALLOCATE(Dummy)
 
-	allocate (Dummy%hijos(0))
-	allocate (Dummy%hijos(1))
-	allocate (Dummy%hijos(2))
-	allocate (Dummy%hijos(3))
-	allocate (Dummy%hijos(4))
-	allocate (Dummy%hijos(5))
-	allocate (Dummy%hijos(6))
-	allocate (Dummy%hijos(7))
+	allocate (Dummy%hijo0)
+	allocate (Dummy%hijo1)
+	allocate (Dummy%hijo2)
+	allocate (Dummy%hijo3)
+	allocate (Dummy%hijo4)
+	allocate (Dummy%hijo5)
+	allocate (Dummy%hijo6)
+	allocate (Dummy%hijo7)
 	Dummy%hijos_creados = .true.
 
 	write(*,*) "Allocated"
 
-	Hijo => Dummy%hijos(1)
+	Hijo => DarHijo(Arbol, 1)
 	write(*,*) "Hijo cero: ", Hijo%id	
 	deallocate(Hijo) 
 

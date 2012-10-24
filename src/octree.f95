@@ -173,7 +173,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 	real*8 tmp_centromasas(0:2)
 	
 
-	type(OctreeNode), POINTER ::  Hijo
+	type(OctreeNode), POINTER ::  Hijo, ArbolPtr
 
 	type(OctreeNode), TARGET ::  Arbol
 	type(Particula) p, q
@@ -187,7 +187,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 	encontrado_nuevo = .false.
 	encontrado_existente = .false.
 	
-!	write(*,*) "Intentan insertar particula: ", p%id, " en nodo ", Arbol%id
+	ArbolPtr => Arbol
 	
 	cube = CrearCubo(Arbol%radio, Arbol%centroide)
 	
@@ -213,13 +213,9 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		else
 			!Nodo interno (contiene particulas en subnodos)
 			!OJO, asume que los hijos estan inicializados
-			
-			!write(*,*) "Nodo ", Arbol%id, " es un nodo interno"
-			
+						
 			!If node is an internal node, update the center-of-mass and total mass of node. 
 			!Recursively insert the body b in the appropriate quadrant.
-
-			!write(*,*) "Particulas en nodo interno antes de incremento: ", Arbol%n_particulas
 
 			Arbol%n_particulas = Arbol%n_particulas + 1
 						
@@ -236,11 +232,10 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			do j = 0, 7, 1
 				!Busco cual hijo contiene la particula
 				!obtengo el cubo que corresponde a cada hijo
-				Hijo => DarHijo(Arbol, i)
+				Hijo => DarHijo(ArbolPtr, j)
 				tmp_cube = CrearCubo(Hijo%radio, Hijo%centroide)
 				!Si el cubo hijo contiene a la particula existente
 				if(CuboContienePunto(tmp_cube, p%posicion)) then				
-!					write(*,*) "Nodo interno. Particula a insertar ubicada en hijo: ", j, " de nodo ", Arbol%id, Arbol%id_particula, Arbol%hoja, " id de hijo: ", Arbol%hijos(j)%id
 					call InsertarParticula(p, Hijo, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
 					return
 				endif				
@@ -312,24 +307,25 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		Arbol%hoja = .false.
 				
 		do j = 0, 7, 1
-			Arbol%hijos(j)%id = NNodos
-			Arbol%hijos(j)%id_particula = -1
-			Arbol%hijos(j)%hoja = .true. 
+			Hijo => DarHijo(ArbolPtr, j)
+			Hijo%id = NNodos
+			Hijo%id_particula = -1
+			Hijo%hoja = .true. 
 			if(.not. Arbol%hijos_creados) then
 				!Si es la primera vez que el hijo se crea, se asigna, sino, se mantiene el valor anterior
-				Arbol%hijos(j)%hijos_creados = .false. 
+				Hijo%hijos_creados = .false. 
 			endif
 			
-			Arbol%hijos(j)%n_particulas = 0
-			Arbol%hijos(j)%centroide(0) = hijos_nuevos(j)%centroide(0)
-			Arbol%hijos(j)%centroide(1) = hijos_nuevos(j)%centroide(1)
-			Arbol%hijos(j)%centroide(2) = hijos_nuevos(j)%centroide(2)
-			Arbol%hijos(j)%centro_masa(0) = -1.0D+0
-			Arbol%hijos(j)%centro_masa(1) = -1.0D+0
-			Arbol%hijos(j)%centro_masa(2) = -1.0D+0
-			Arbol%hijos(j)%radio = hijos_nuevos(j)%radio
-			Arbol%hijos(j)%padre => Arbol
-			Arbol%hijos(j)%nivel = Arbol%nivel + 1
+			Hijo%n_particulas = 0
+			Hijo%centroide(0) = hijos_nuevos(j)%centroide(0)
+			Hijo%centroide(1) = hijos_nuevos(j)%centroide(1)
+			Hijo%centroide(2) = hijos_nuevos(j)%centroide(2)
+			Hijo%centro_masa(0) = -1.0D+0
+			Hijo%centro_masa(1) = -1.0D+0
+			Hijo%centro_masa(2) = -1.0D+0
+			Hijo%radio = hijos_nuevos(j)%radio
+			Hijo%padre => Arbol
+			Hijo%nivel = Arbol%nivel + 1
 			NNodos = NNodos + 1
 		enddo				
 
@@ -337,7 +333,7 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			
 			!Voy a asignar los vecinos a los hijos recien creados
 			do j = 0, 7, 1
-				call AsignarAdyacentes(j, Arbol%hijos(j), Arbol)
+				call AsignarAdyacentes(j, Hijo, Arbol)
 			enddo
 			
 			Arbol%hijos_creados = .true.
@@ -370,34 +366,31 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		do j = 0, 7, 1			
 			!obtengo el cubo que corresponde a cada hijo
 						
-			tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
-						
-			!write(*,*) "DESPUES DE CREAR CUBO: Posicion de particula: ", p%posicion(0), p%posicion(1), p%posicion(2)
-						
+			Hijo => DarHijo(ArbolPtr, j)
+
+			tmp_cube = CrearCubo(Hijo%radio, Hijo%centroide)
+												
 			!Si el cubo hijo contiene a la particula que quiero insertar
 				
 			if(.not. encontrado_nuevo) then
 				if(CuboContienePunto(tmp_cube, p%posicion)) then
-!					write(*,*) "Nodo externo. Particula a insertar ", p%id ," ubicada en hijo: ", j, " de nodo ", Arbol%id, " id de hijo: ", Arbol%hijos(j)%id
-					call InsertarParticula(p, Arbol%hijos(j), NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
+					call InsertarParticula(p, Hijo, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
 					encontrado_nuevo = .true.
 				endif
 			endif
 			
 			if(.not. encontrado_existente) then
 				if(CuboContienePunto(tmp_cube, q%posicion)) then				
-!					write(*,*) "Nodo externo. Particula existente ", q%id ," ubicada en hijo: ", j, " de nodo ", Arbol%id, " id de hijo: ", Arbol%hijos(j)%id				
 					!Con esto, indico que es el nodo actual -i-, se convierte en un internal node
 					Arbol%id_particula = -1
 					Arbol%hoja = .false.
 					Arbol%densidad = 0.0D+0
-					call InsertarParticula(q, Arbol%hijos(j), NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
+					call InsertarParticula(q, Hijo, NNodos, masas, coordenadas_x, coordenadas_y, coordenadas_z, N, NodosParticulas)
 					encontrado_existente = .true.
 				endif
 			endif
 			
 			if(encontrado_existente .and. encontrado_nuevo) then
-!				write(*,*) "Encontrado lugar de ambos nuevo y existente"
 				return
 			endif
 		enddo		
@@ -405,15 +398,8 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 		!Debugging de problema de no deteccion en 10/13/2011
 		if(.false.) then
 
-			!write(*,*) "--------------------------"
-
-			!call imprimirNube(N, masas, coordenadas_x, coordenadas_y, coordenadas_z, coordenadas_x, coordenadas_y, coordenadas_z)
-
 			write(*,*) "--------------------------"
-
 			write(*,*) "Cubo de nodo actual"
-!!!			tmp_cube = CrearCubo(Arbol%radio, Arbol%centroide)
-!!!			call imprimirCubo(tmp_cube)
 			call imprimirCubo(cube)
 			write(*,*) "---------------------------------"
 			write(*,*) "Info de p: (id, posicion) ", p%id, p%posicion
@@ -422,12 +408,10 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			write(*,*) "Contiene a q? ", CuboContienePunto(cube, q%posicion)
 			write(*,*) "Info de hijos"
 			do j = 0, 7, 1
-				write(*,*) "Info de hijo: ", Arbol%hijos(j)%id, Arbol%hijos(j)%id_particula, Arbol%hijos(j)%n_particulas
-				tmp_cube = CrearCubo(Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide)
-				write(*,*) "Hijo Contiene a p? ", CuboContienePunto(tmp_cube, p%posicion), "Radio y centroide: ", Arbol%hijos(j)%radio, Arbol%hijos(j)%centroide
+				write(*,*) "Info de hijo: ", Hijo%id, Hijo%id_particula, Hijo%n_particulas
+				tmp_cube = CrearCubo(Hijo%radio, Hijo%centroide)
+				write(*,*) "Hijo Contiene a p? ", CuboContienePunto(tmp_cube, p%posicion), "Radio y centroide: ", Hijo%radio, Hijo%centroide
 				write(*,*) "Hijo Contiene a q? ", CuboContienePunto(tmp_cube, q%posicion)
-			!	call imprimirCubo(tmp_cube)
-			!	write(*,*) "---------------------------------"
 			enddo			
 
 		endif
@@ -654,30 +638,29 @@ RECURSIVE SUBROUTINE ExpandirNodo(Nodo, NodoAExplorar, N, detectados, n_vecinos,
 	integer*4 N, n_vecinos, detectados, i, j
 	integer*4 lista_vecinos(0:n_vecinos-1)
 	real*8 distancias_vecinos(0:n_vecinos-1)
-	type(OctreeNode) Nodo, NodoAExplorar
-	type(OctreeNode), POINTER :: dummy
+	type(OctreeNode), TARGET :: Nodo, NodoAExplorar
+	type(OctreeNode), POINTER :: dummy, NodoAExplorarPtr
 	
-!	write(*,*) "Inicia ExpandirNodo: ", NodoAExplorar%id, " - detectados: ", detectados
+	NodoAExplorarPtr => NodoAExplorar
 	
 	do j = 0, 7, 1
-		dummy => NodoAExplorar%hijos(j)
+		dummy => DarHijo(NodoAExplorarPtr, j)
 		if(associated(dummy)) then
-			if(NodoAExplorar%hijos(j)%hoja .and. NodoAExplorar%hijos(j)%id_particula >= 0 .and. .not. NodoAExplorar%hijos(j)%visitado .and. .not. NodoAExplorar%hijos(j)%id == Nodo%id) then
+			if(dummy%hoja .and. dummy%id_particula >= 0 .and. .not. dummy%visitado .and. .not. dummy%id == Nodo%id) then
 				if(detectados < n_vecinos) then
-					if(.not. NodoAExplorar%hijos(j)%visitado) then
-						lista_vecinos(detectados) = NodoAExplorar%hijos(j)%id_particula
-						distancias_vecinos(detectados) = distanciaPuntos(Nodo%centro_masa, NodoAExplorar%hijos(j)%centro_masa)
-	!!					write(*,*) "Agregando hijo como vecino (j, id, distancia, detectados): ", j, NodoAExplorar%hijos(j)%id_particula, distancias_vecinos(detectados), detectados
+					if(.not. dummy%visitado) then
+						lista_vecinos(detectados) = dummy%id_particula
+						distancias_vecinos(detectados) = distanciaPuntos(Nodo%centro_masa, dummy%centro_masa)
 						detectados = detectados + 1
-						NodoAExplorar%hijos(j)%visitado = .true.
+						dummy%visitado = .true.
 					endif
 				else
 					!write(*,*) "RevisarReemplazar (2) en hijo: ", j
-					call RevisarReemplazar(Nodo, NodoAExplorar%hijos(j) ,n_vecinos, lista_vecinos, distancias_vecinos)
+					call RevisarReemplazar(Nodo, dummy ,n_vecinos, lista_vecinos, distancias_vecinos)
 				endif
 			else
-				if(.not. NodoAExplorar%hijos(j)%hoja .and. .not. NodoAExplorar%hijos(j)%visitado .and. NodoAExplorar%hijos(j)%n_particulas > 0) then
-					call ExpandirNodo(Nodo, NodoAExplorar%hijos(j), N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
+				if(.not. dummy%hoja .and. .not. dummy%visitado .and. dummy%n_particulas > 0) then
+					call ExpandirNodo(Nodo, dummy, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 				endif
 			endif
 		endif
@@ -764,20 +747,18 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	!No reviso hermanos si se está en la raiz
 	if(Arbol%nivel > 0) then	
 		do j = 0, 7, 1
-			dummy => Arbol%padre%hijos(j)
+			dummy => DarHijo(Arbol%padre,j)
 			if(associated(dummy)) then
-				if(Arbol%padre%hijos(j)%hoja .and. Arbol%padre%hijos(j)%id_particula >= 0 .and. .not. Arbol%padre%hijos(j)%id == Nodo%id) then
+				if(dummy%hoja .and. dummy%id_particula >= 0 .and. .not. dummy%id == Nodo%id) then
 					if(detectados < n_vecinos) then
-						if(.not. Arbol%padre%hijos(j)%visitado) then
-							lista_vecinos(detectados) = Arbol%padre%hijos(j)%id_particula
-							distancias_vecinos(detectados) = distanciaPuntos(Nodo%centro_masa, Arbol%padre%hijos(j)%centro_masa)
-							!!write(*,*) "Agregando hermano como vecino (j, id, distancia, detectados): ", j, Arbol%padre%hijos(j)%id_particula, distancias_vecinos(detectados), detectados
+						if(.not. dummy%visitado) then
+							lista_vecinos(detectados) = dummy%id_particula
+							distancias_vecinos(detectados) = distanciaPuntos(Nodo%centro_masa, dummy%centro_masa)
 							detectados = detectados + 1
-							Arbol%padre%hijos(j)%visitado = .true.
+							dummy%visitado = .true.
 						endif
 					else
-						!write(*,*) "RevisarReemplazar en hijo: ", j
-						call RevisarReemplazar(Nodo, Arbol%padre%hijos(j) ,n_vecinos, lista_vecinos, distancias_vecinos)
+						call RevisarReemplazar(Nodo, dummy ,n_vecinos, lista_vecinos, distancias_vecinos)
 					endif
 				endif
 			endif
@@ -896,11 +877,10 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 
 	if(Arbol%nivel > 0) then	
 		do j = 0, 7, 1
-			dummy => Arbol%padre%hijos(j)
+			dummy => DarHijo(Arbol%padre, j)
 			if(associated(dummy)) then
-				if(.not. Arbol%padre%hijos(j)%hoja .and. Arbol%padre%hijos(j)%n_particulas > 0) then
-!!					write(*,*) "Expande a hermano rama: ", Arbol%padre%hijos(j)%id, "detectados: ", detectados
-					call ExpandirNodo(Nodo, Arbol%padre%hijos(j), N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
+				if(.not. dummy%hoja .and. dummy%n_particulas > 0) then
+					call ExpandirNodo(Nodo, dummy, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 				endif
 			endif
 		enddo
@@ -909,13 +889,10 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	!------------------
 	!Expando adyacentes
 	!------------------
-	
-!!	write(*,*) "Antes de expandir adyacentes. Detectados: ", detectados
-		
+			
 	if(associated(Arbol%adyacente_superior)) then		
 				
 		if(.not. Arbol%adyacente_superior%hoja .and. Arbol%adyacente_superior%n_particulas > 0 .and. .not. Arbol%adyacente_superior%visitado) then
-!!			write(*,*) "Expande a adyacente_superior: ", Arbol%adyacente_superior%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_superior, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -923,7 +900,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	if(associated(Arbol%adyacente_inferior)) then
 				
 		if(.not. Arbol%adyacente_inferior%hoja .and. Arbol%adyacente_inferior%n_particulas > 0 .and. .not. Arbol%adyacente_inferior%visitado) then
-!!			write(*,*) "Expande a adyacente_inferior: ", Arbol%adyacente_inferior%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_inferior, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -931,7 +907,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	if(associated(Arbol%adyacente_izquierdo)) then
 				
 		if(.not. Arbol%adyacente_izquierdo%hoja .and. Arbol%adyacente_izquierdo%n_particulas > 0 .and. .not. Arbol%adyacente_izquierdo%visitado) then
-!!			write(*,*) "Expande a adyacente_izquierdo: ", Arbol%adyacente_izquierdo%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_izquierdo, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -939,7 +914,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	if(associated(Arbol%adyacente_derecho)) then
 				
 		if(.not. Arbol%adyacente_derecho%hoja .and. Arbol%adyacente_derecho%n_particulas > 0 .and. .not. Arbol%adyacente_derecho%visitado) then
-!!			write(*,*) "Expande a adyacente_derecho: ", Arbol%adyacente_derecho%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_derecho, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -947,7 +921,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	if(associated(Arbol%adyacente_frente)) then
 				
 		if(.not. Arbol%adyacente_frente%hoja .and. Arbol%adyacente_frente%n_particulas > 0 .and. .not. Arbol%adyacente_frente%visitado) then
-!!			write(*,*) "Expande a adyacente_frente: ", Arbol%adyacente_frente%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_frente, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -955,7 +928,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	if(associated(Arbol%adyacente_trasero)) then
 				
 		if(.not. Arbol%adyacente_trasero%hoja .and. Arbol%adyacente_trasero%n_particulas > 0 .and. .not. Arbol%adyacente_trasero%visitado) then
-!!			write(*,*) "Expande a adyacente_trasero: ", Arbol%adyacente_trasero%id, "detectados: ", detectados
 			call ExpandirNodo(Nodo, Arbol%adyacente_trasero, N, detectados, n_vecinos, lista_vecinos, distancias_vecinos)
 		endif
 	endif
@@ -963,8 +935,6 @@ RECURSIVE SUBROUTINE Vecinos(Nodo, NodosParticulas, Arbol, N, detectados, n_veci
 	!------------------
 	!Llamada recursiva
 	!------------------
-
-!	write(*,*) "Antes de llamada recursiva, detectados: ", detectados, nivel_actual, nivel_maximo, " Nodo actual: ", Arbol%id
 
 	if(detectados < n_vecinos .or. nivel_actual < nivel_maximo) then
 		
@@ -1034,14 +1004,18 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 
 	integer*4 posicion_hijo
 	
-	type(OctreeNode) Nodo, Padre
+	type(OctreeNode), TARGET :: Nodo, Padre
+
+	type(OctreeNode), POINTER :: Hijo, PadrePtr
+
+	PadrePtr => Padre
 
 	SELECT CASE (posicion_hijo)
 	   
 	   CASE (0)	   	
-	   	Nodo%adyacente_izquierdo => Padre%hijos(1)
-	   	Nodo%adyacente_frente => Padre%hijos(2)
-	   	Nodo%adyacente_inferior => Padre%hijos(3)
+	   	Nodo%adyacente_izquierdo => DarHijo(PadrePtr, 1)
+	   	Nodo%adyacente_frente => DarHijo(PadrePtr, 2)
+	   	Nodo%adyacente_inferior => DarHijo(PadrePtr, 3)
 	   	
 	   	!!Vecinos de padre
 	   	
@@ -1058,9 +1032,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	endif
 	   	
 	   CASE (1)		
-	   	Nodo%adyacente_derecho => Padre%hijos(0)
-	   	Nodo%adyacente_frente => Padre%hijos(4)
-	   	Nodo%adyacente_inferior => Padre%hijos(6)
+	   	Nodo%adyacente_derecho => DarHijo(PadrePtr, 0)
+	   	Nodo%adyacente_frente => DarHijo(PadrePtr, 4)
+	   	Nodo%adyacente_inferior => DarHijo(PadrePtr, 6)
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_izquierdo)) then
@@ -1077,9 +1051,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	
 	   	
 	   CASE (2)
-	   	Nodo%adyacente_izquierdo => Padre%hijos(4)
-	   	Nodo%adyacente_trasero => Padre%hijos(0)
-	   	Nodo%adyacente_inferior => Padre%hijos(5)
+	   	Nodo%adyacente_izquierdo => DarHijo(PadrePtr, 4)
+	   	Nodo%adyacente_trasero => DarHijo(PadrePtr, 0)
+	   	Nodo%adyacente_inferior => DarHijo(PadrePtr, 5)
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_derecho)) then
@@ -1095,9 +1069,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	endif
 	   		   	
 	   CASE (3)
-	   	Nodo%adyacente_izquierdo => Padre%hijos(6)
-	   	Nodo%adyacente_frente => Padre%hijos(5)
-	   	Nodo%adyacente_superior => Padre%hijos(0)
+	   	Nodo%adyacente_izquierdo => DarHijo(PadrePtr, 6)
+	   	Nodo%adyacente_frente => DarHijo(PadrePtr, 5)
+	   	Nodo%adyacente_superior => DarHijo(PadrePtr, 0)
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_derecho)) then
@@ -1113,9 +1087,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	endif	   	
 	   	
 	   CASE (4)
-	   	Nodo%adyacente_derecho => Padre%hijos(2)
-	   	Nodo%adyacente_trasero => Padre%hijos(1)
-	   	Nodo%adyacente_inferior => Padre%hijos(7)	   
+	   	Nodo%adyacente_derecho => DarHijo(PadrePtr, 2)
+	   	Nodo%adyacente_trasero => DarHijo(PadrePtr, 1)
+	   	Nodo%adyacente_inferior => DarHijo(PadrePtr, 7)	   
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_izquierdo)) then
@@ -1132,9 +1106,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	
 	   	
 	   CASE (5)
-	   	Nodo%adyacente_izquierdo => Padre%hijos(7)
-	   	Nodo%adyacente_trasero => Padre%hijos(3)
-	   	Nodo%adyacente_superior => Padre%hijos(2)
+	   	Nodo%adyacente_izquierdo => DarHijo(PadrePtr, 7)
+	   	Nodo%adyacente_trasero => DarHijo(PadrePtr, 3)
+	   	Nodo%adyacente_superior => DarHijo(PadrePtr, 2)
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_derecho)) then
@@ -1151,9 +1125,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	
 	   	
 	   CASE (6)
-	   	Nodo%adyacente_derecho => Padre%hijos(3)
-	   	Nodo%adyacente_frente => Padre%hijos(7)
-	   	Nodo%adyacente_superior => Padre%hijos(1)
+	   	Nodo%adyacente_derecho => DarHijo(PadrePtr, 3)
+	   	Nodo%adyacente_frente => DarHijo(PadrePtr, 7)
+	   	Nodo%adyacente_superior => DarHijo(PadrePtr, 1)
 	   	
 	   	!!Vecinos de padre
 	   	if(associated(Padre%adyacente_izquierdo)) then
@@ -1170,9 +1144,9 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	
 	   	
 	   CASE (7)
-	   	Nodo%adyacente_derecho => Padre%hijos(5)
-	   	Nodo%adyacente_trasero => Padre%hijos(6)
-	   	Nodo%adyacente_superior => Padre%hijos(4)	   	   
+	   	Nodo%adyacente_derecho => DarHijo(PadrePtr, 5)
+	   	Nodo%adyacente_trasero => DarHijo(PadrePtr, 6)
+	   	Nodo%adyacente_superior => DarHijo(PadrePtr, 4)	   	   
 	      
 	   	if(associated(Padre%adyacente_izquierdo)) then
 	   		Nodo%adyacente_izquierdo => Padre%adyacente_izquierdo
@@ -1187,7 +1161,7 @@ SUBROUTINE AsignarAdyacentes(posicion_hijo, Nodo, Padre)
 	   	endif	   	
 	      
 	      
-	END SELECT	
+	END SELECT
 
 END SUBROUTINE
 
@@ -1233,14 +1207,18 @@ RECURSIVE SUBROUTINE ResetearVisitados(Arbol)
 
 	integer*4 i
 		
-	type(OctreeNode) Arbol
+	type(OctreeNode), TARGET :: Arbol
+
+	type(OctreeNode), POINTER :: ArbolPtr
+
+	ArbolPtr => Arbol
 
 	Arbol%visitado = .false.
 	
 	if(.not. Arbol%hoja) then
 		
 		do i = 0, 7, 1
-			call ResetearVisitados(Arbol%hijos(i))
+			call ResetearVisitados(DarHijo(ArbolPtr, i))
 		enddo
 	endif
 	
@@ -1271,6 +1249,8 @@ function DarHijo(Arbol, N) result(hijo)
 	
 	type(OctreeNode), POINTER :: Arbol, hijo
 	
+	integer*4 N
+
 	SELECT CASE (N)
 	   
 	   CASE (0)	   	
@@ -1297,6 +1277,8 @@ function DarHijo(Arbol, N) result(hijo)
 	   CASE (7)	   	
 		hijo => Arbol%hijo7
 	
+	END SELECT
+
 	return
 	
 end function 

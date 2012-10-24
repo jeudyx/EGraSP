@@ -90,7 +90,7 @@ recursive function calcularAccGravBH(p, Arbol, umbral, soft_len) result(acc_vect
 
 !				write(*,*) "Sobre Hijo: ", i, " ID nodo: ", Arbol%hijos(i)%id
 
-				Hijo => Arbol%hijos(i)
+				Hijo => DarHijo(Arbol, i)
 
 				tmp_acc_vect = calcularAccGravBH(p, Hijo, umbral, soft_len)
 				acc_vect(0) = acc_vect(0) + tmp_acc_vect(0)
