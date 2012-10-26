@@ -56,7 +56,6 @@ RECURSIVE SUBROUTINE limpiarArbol(Arbol)
 !	write(*,*) "--------"	
 
 	deallocate(Arbol)
-!	Arbol => NULL()
 
 END SUBROUTINE
 
@@ -300,6 +299,16 @@ RECURSIVE SUBROUTINE InsertarParticula(p, Arbol, NNodos, masas, coordenadas_x, c
 			allocate (Arbol%hijo5)
 			allocate (Arbol%hijo6)
 			allocate (Arbol%hijo7)
+
+			Arbol%hijo0%hijos_creados = .false.
+			Arbol%hijo1%hijos_creados = .false.
+			Arbol%hijo2%hijos_creados = .false.
+			Arbol%hijo3%hijos_creados = .false.
+			Arbol%hijo4%hijos_creados = .false.
+			Arbol%hijo5%hijos_creados = .false.
+			Arbol%hijo6%hijos_creados = .false.
+			Arbol%hijo7%hijos_creados = .false.
+
 			Arbol%hijos_creados = .true.
 		endif
 						

@@ -1,6 +1,6 @@
 FC = mpif90
 
-FCFLAGS = -ffree-line-length-1000 -m64
+FCFLAGS = -ffree-line-length-1000 -m64 -O3
 
 PROGRAMS = prueba_mem egrasp generar_nube
 

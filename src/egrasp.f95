@@ -511,7 +511,43 @@ program principal
 		call MPI_SSEND(response, 1, MPI_integer, 0, tag, MPI_COMM_WORLD, errcode)
 	endif	
 	
+	call limpiarArbol(Arbol)
+
 	call MPI_FINALIZE (errcode)
+
+	DEALLOCATE(masas)
+	DEALLOCATE(pos_x)
+	DEALLOCATE(pos_y)
+	DEALLOCATE(pos_z)
+	DEALLOCATE(v_x)
+	DEALLOCATE(v_y)
+	DEALLOCATE(v_z)
+	DEALLOCATE(acc_x)
+	DEALLOCATE(acc_y)
+	DEALLOCATE(acc_z)	
+	DEALLOCATE(distancias)
+	DEALLOCATE(densidades)		
+
+	DEALLOCATE(masas_proc)
+	DEALLOCATE(pos_x_proc)
+	DEALLOCATE(pos_y_proc)
+	DEALLOCATE(pos_z_proc)
+	DEALLOCATE(v_x_proc)
+	DEALLOCATE(v_y_proc)
+	DEALLOCATE(v_z_proc)
+	DEALLOCATE(acc_x_proc)
+	DEALLOCATE(acc_y_proc)
+	DEALLOCATE(acc_z_proc)	
+	DEALLOCATE(distancias_proc)
+	DeALLOCATE(densidades_proc)
+	DEALLOCATE(densidades_locales)
+	DEALLOCATE(densidades_locales_proc)
+	DEALLOCATE(presiones)
+	DEALLOCATE(presiones_proc)
+	DEALLOCATE(matriz_vecinos)
+	DEALLOCATE(matriz_vecinos_proc)	
+
+	DEALLOCATE(NodosParticulas)
 	
 	write(*,*) "FIN ", myid
 	
