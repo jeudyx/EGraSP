@@ -486,7 +486,7 @@ program principal
 		!En este punto todos los hijos terminaron su parte
 		
 		!if(myid == 0) then
-		if(myid == 0 .and. MOD(i, 10) == 0) then
+		if(myid == 0 .and. MOD(i, 1000) == 0) then
 			write(*,*) "Iteracion ", i, " tiempo transcurrido: ", (i + 1) * dt , "  yrs. Inicio: ", fechaI, " - ", tiempoI, " - Termina: ", fechaF, " - ", tiempoF
 		endif
 

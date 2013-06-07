@@ -28,6 +28,7 @@ subroutine pasoLeapFrog(N, itr_inicio, itr_final, Arbol, NodosParticulas, masas,
 	
 	implicit none
 
+    !Declaración de variables en Fortran
 	integer*4 N, i, j, itr_inicio, itr_final, myid, n_vecinos, max_i
 	integer*4 lista_vecinos(0:n_vecinos-1)
 	integer*4 matriz_vecinos(0:N-1, 0:n_vecinos-1)
